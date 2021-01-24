@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/marpi-time-tracker/static/css/main.8c8b27cf.chunk.css",
-    "main.js": "/marpi-time-tracker/static/js/main.113f0545.chunk.js",
-    "main.js.map": "/marpi-time-tracker/static/js/main.113f0545.chunk.js.map",
+    "main.js": "/marpi-time-tracker/static/js/main.1ecc5657.chunk.js",
+    "main.js.map": "/marpi-time-tracker/static/js/main.1ecc5657.chunk.js.map",
     "runtime-main.js": "/marpi-time-tracker/static/js/runtime-main.a1d4e522.js",
     "runtime-main.js.map": "/marpi-time-tracker/static/js/runtime-main.a1d4e522.js.map",
     "static/js/2.2f7a1e1b.chunk.js": "/marpi-time-tracker/static/js/2.2f7a1e1b.chunk.js",
@@ -19,6 +19,6 @@
     "static/js/runtime-main.a1d4e522.js",
     "static/js/2.2f7a1e1b.chunk.js",
     "static/css/main.8c8b27cf.chunk.css",
-    "static/js/main.113f0545.chunk.js"
+    "static/js/main.1ecc5657.chunk.js"
   ]
 }
