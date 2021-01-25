@@ -1,10 +1,13 @@
 import React from 'react';
-import Signup from "./components/Signup";
+import Signup from "./Signup";
 import { Container } from 'react-bootstrap';
-import { AuthProvider } from './contexts/AuthContext';
+import { AuthProvider } from '../contexts/AuthContext';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Dashboard from './components/Dashboard';
-import Login from './components/Login';
+import Dashboard from './Dashboard';
+import Login from './Login';
+import PrivateRoute from './PrivateRoute';
+import ForgotPassword from './ForgotPassword';
+import UpdateProfile from './UpdateProfile';
 function App() {
   return (
 
@@ -14,9 +17,11 @@ function App() {
           <AuthProvider>
             <Switch>
               {/* only match this slash path */}
-              <Route exact path="/" component={Dashboard}></Route>
+              <PrivateRoute exact path="/" component={Dashboard}></PrivateRoute>
+              <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
               <Route path="/signup" component={Signup}></Route>
               <Route path="/login" component={Login}></Route>
+              <Route path="/forgot-password" component={ForgotPassword}></Route>
             </Switch>
           </AuthProvider>
         </Router>
