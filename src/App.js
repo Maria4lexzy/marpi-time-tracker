@@ -1,12 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
-import img from './img/PHO_9975.jpg';
-
+import React from 'react';
+import Signup from "./components/Signup";
+import { Container } from 'react-bootstrap';
 function App() {
   return (
-    <div className="App">
-      <h1>Marpi Time Tracksfder ddf</h1>
-    </div>
+    <Container className="d-flex alighn-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+      <div className="w-100" style={{ maxWidth: "400px" }}> <Signup /></div>
+
+    </Container>
   );
 }
 
