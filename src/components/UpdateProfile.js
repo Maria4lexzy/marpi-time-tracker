@@ -31,9 +31,13 @@ export default function Signup() {
         }
 
         Promise.all(promises)
-            .then(() => { history.push('/') })
-            .catch(() => { setError('Failed to update account') })
-            .finally(() => { setLoading(false) })
+            .then(() => {
+                history.push('/')
+            }).catch(() => {
+                setError('Failed to update account')
+            }).finally(() => {
+                setLoading(false)
+            })
 
 
     }
