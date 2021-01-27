@@ -1,8 +1,10 @@
 import React, { useRef, useState } from 'react';
-import { Form, Button, Card, Alert } from 'react-bootstrap'
+import { Form, Button, Card, Alert, Container } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
+import * as ROUTES from '../constants/routes';
+
 export default function Login() {
 
     const emailRef = useRef();
@@ -28,31 +30,36 @@ export default function Login() {
     }
     return (
         <>
-            <Card>
-                <Card.Body>
-                    <h2 className="text-center">Log In</h2>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group id="email">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control type="email" ref={emailRef} required></Form.Control>
-                        </Form.Group>
+            <Container className="d-flex alighn-items-center justify-content-center" style={{ minHeight: "100vh" }}>
+                <div className="w-100" style={{ maxWidth: "400px" }}>
+                    <Card>
+                        <Card.Body>
+                            <h2 className="text-center">Log In</h2>
+                            {error && <Alert variant="danger">{error}</Alert>}
+                            <Form onSubmit={handleSubmit}>
+                                <Form.Group id="email">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control type="email" ref={emailRef} required></Form.Control>
+                                </Form.Group>
 
-                        <Form.Group id="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" ref={passwordRef} required></Form.Control>
-                        </Form.Group>
+                                <Form.Group id="password">
+                                    <Form.Label>Password</Form.Label>
+                                    <Form.Control type="password" ref={passwordRef} required></Form.Control>
+                                </Form.Group>
 
-                        <Button disabled={loading} className="w-100" type="submit" >Log In</Button>
-                    </Form>
-                    <div className="w-100 text-center mt-3">
-                        <Link to="/forgot-password" >Forgot Password</Link>
+                                <Button disabled={loading} className="w-100" type="submit" >Log In</Button>
+                            </Form>
+                            <div className="w-100 text-center mt-3">
+                                <Link to={ROUTES.FORGET_PASSWORD} >Forgot Password</Link>
+                            </div>
+                        </Card.Body>
+                    </Card>
+                    <div className="w-100 text-center mt-2">
+                        Need an account? <Link to={ROUTES.SIGN_UP} >Sign Up</Link>
                     </div>
-                </Card.Body>
-            </Card>
-            <div className="w-100 text-center mt-2">
-                Need an account? <Link to="/signup" >Sign Up</Link>
-            </div>
+
+                </div>
+            </Container >
         </>
     );
 }
