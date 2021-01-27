@@ -12,6 +12,7 @@ export default function Navigation() {
                     <Link to={ROUTES.DASHBOARD}>DASHBOARD</Link>
                     <Link to={ROUTES.LOG_IN}>LOG IN </Link>
                     <Link to={ROUTES.SIGN_UP}>SIGN UP </Link>
+                    <Link to={ROUTES.CALENDAR}>CALENDAR </Link>
                     {/* <Nav.Link><Link to={ROUTES.HOME}>HOME</Link></Nav.Link> */}
                     {/* <Nav.Link><Link to={ROUTES.ADMIN}>ADMIN</Link></Nav.Link> */}
 
