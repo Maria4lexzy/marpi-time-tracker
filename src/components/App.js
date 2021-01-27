@@ -9,13 +9,11 @@ import ForgotPassword from './ForgotPassword';
 import UpdateProfile from './UpdateProfile';
 import Navigation from './Navigation'
 import * as ROUTES from '../constants/routes';
-
 import Calendar from './Calendar';
 
 
 function App() {
   return (
-
 
 
     <Router>
@@ -27,6 +25,7 @@ function App() {
           <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
           <Route path={ROUTES.SIGN_UP} component={Signup}></Route>
           <Route path={ROUTES.LOG_IN} component={Login}></Route>
+          <Route path={ROUTES.CALENDAR} component={Calendar}></Route>
           <Route path={ROUTES.FORGET_PASSWORD} component={ForgotPassword}></Route>
 
         </Switch>
