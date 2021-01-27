@@ -8,6 +8,7 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import ForgotPassword from './ForgotPassword';
 import UpdateProfile from './UpdateProfile';
+import Calendar from './Calendar';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
               <Link to="/login" >Login</Link>
               <Link to="/signup" >Sign up</Link>
               <Link to="/update-profile" >Update</Link>
+              <Link to="/calendar" >Calendar</Link>
             </div>
             <Switch>
               {/* only match this slash path */}
@@ -28,11 +30,11 @@ function App() {
               <Route path="/signup" component={Signup}></Route>
               <Route path="/login" component={Login}></Route>
               <Route path="/forgot-password" component={ForgotPassword}></Route>
+              <Route path="/calendar" component={Calendar}></Route>
 
             </Switch>
           </AuthProvider>
         </Router>
-        <p>slkkjf</p>
 
       </div>
     </Container>
