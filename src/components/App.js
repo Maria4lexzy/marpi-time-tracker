@@ -10,8 +10,12 @@ import UpdateProfile from './UpdateProfile';
 import Navigation from './Navigation'
 import * as ROUTES from '../constants/routes';
 
+import Calendar from './Calendar';
+
+
 function App() {
   return (
+
 
 
     <Router>
