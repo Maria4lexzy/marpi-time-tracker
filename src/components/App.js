@@ -1,6 +1,5 @@
 import React from 'react';
 import Signup from "./Signup";
-import { Container } from 'react-bootstrap';
 import { AuthProvider } from '../contexts/AuthContext';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import Dashboard from './Dashboard';
@@ -8,34 +7,28 @@ import Login from './Login';
 import PrivateRoute from './PrivateRoute';
 import ForgotPassword from './ForgotPassword';
 import UpdateProfile from './UpdateProfile';
+import Navigation from './Navigation'
+import * as ROUTES from '../constants/routes';
 
 function App() {
   return (
 
-    <Container className="d-flex alighn-items-center justify-content-center" style={{ minHeight: "100vh" }}>
-      <div className="w-100" style={{ maxWidth: "400px" }}>
-        <Router>
-          <AuthProvider>
-            <div className="w-100 text-center mt-2">
-              <Link to="/login" >Login</Link>
-              <Link to="/signup" >Sign up</Link>
-              <Link to="/update-profile" >Update</Link>
-            </div>
-            <Switch>
-              {/* only match this slash path */}
-              <PrivateRoute exact path="/" component={Dashboard}></PrivateRoute>
-              <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
-              <Route path="/signup" component={Signup}></Route>
-              <Route path="/login" component={Login}></Route>
-              <Route path="/forgot-password" component={ForgotPassword}></Route>
 
-            </Switch>
-          </AuthProvider>
-        </Router>
-        <p>slkkjf</p>
+    <Router>
+      <AuthProvider>
+        <Navigation />
+        <Switch>
+          {/* only match this slash path */}
+          <PrivateRoute exact path="/" component={Dashboard}></PrivateRoute>
+          <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
+          <Route path={ROUTES.SIGN_UP} component={Signup}></Route>
+          <Route path={ROUTES.LOG_IN} component={Login}></Route>
+          <Route path={ROUTES.FORGET_PASSWORD} component={ForgotPassword}></Route>
 
-      </div>
-    </Container>
+        </Switch>
+      </AuthProvider>
+    </Router>
+
 
   );
 }
