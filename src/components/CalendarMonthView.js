@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
 import '../assets/css/Calendar.css';
 import {createCalendarDays} from '../utils/calendar.js'
+import {Table} from 'react-bootstrap'
 export default function Calendar() {
 
+    const prevNextMonth = {
+        color: 'red',
+      };
     useEffect(()=>{
         renderCalendar(new Date());
     }, [])
@@ -50,7 +54,6 @@ export default function Calendar() {
     
        return (
         <>
-
             <div className="container">
                 <div className="calendar">
                     <div className="month">
@@ -61,20 +64,30 @@ export default function Calendar() {
                     </div>
                     <button onClick={nextMonth} className="transp-btn"><MdChevronRight className="next" size={62}/></button>
 
-                    
-                    </div>
-                    <div className="weekdays">
-                    <div>Mon</div>                 
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                    <div>Sun</div>
-                    </div>
-                    <div dangerouslySetInnerHTML={{__html: daysHTML}} className="days"></div>
-                </div>
             </div>
+            </div> </div>
+
+            <div className="mt-5 calendar">
+                    <Table bordered responsive="md" className="month">
+                        <thead className="text-uppercase text-center">
+                            <tr>
+                                <th>Week No.</th>
+                                <th>Mon</th>
+                                <th>Tue</th>
+                                <th>Wed</th>
+                                <th>Thu</th>
+                                <th>Fri</th>
+                                <th>Sat</th>
+                                <th>Sun</th>
+                            </tr>
+                        </thead>
+                        <tbody dangerouslySetInnerHTML={{__html: daysHTML}}>
+                           
+
+                        </tbody>
+                    </Table>
+
+                </div>
         </>
     )
 }
