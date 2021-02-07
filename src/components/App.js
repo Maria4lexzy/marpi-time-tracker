@@ -10,6 +10,7 @@ import UpdateProfile from './UpdateProfile';
 import Navigation from './Navigation'
 import * as ROUTES from '../constants/routes';
 import Calendar from './Calendar';
+import CalendarTesting from './CalanderTesting';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path={ROUTES.LOG_IN} component={Login}></Route>
           <Route path={ROUTES.CALENDAR} component={Calendar}></Route>
           <Route path={ROUTES.FORGET_PASSWORD} component={ForgotPassword}></Route>
+          <Route path={ROUTES.CALENDAR_T} component={CalendarTesting}></Route>
 
         </Switch>
       </AuthProvider>
