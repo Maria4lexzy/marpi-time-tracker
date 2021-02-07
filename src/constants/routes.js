@@ -2,6 +2,7 @@ export const DASHBOARD = '/';
 export const SIGN_UP = '/signup';
 export const LOG_IN = '/login';
 export const CALENDAR = '/calendar';
+export const CALENDAR_T = '/calendar-test';
 // // export const HOME = '/home';
 // export const ACCOUNT = '/account';
 // export const ADMIN = '/admin';
