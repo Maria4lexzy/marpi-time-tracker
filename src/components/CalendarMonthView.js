@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
 import '../assets/css/Calendar.css';
-import {createCalendarDays} from '../utils/calendar.js'
-import {Table} from 'react-bootstrap'
-export default function Calendar() {
+import {createCalendarDays} from '../utils/calendar.js';
+import {Table} from 'react-bootstrap';
+import store from '../redux/configureStore';
+import {currentTitleAction} from "../redux/CalendarTitleSlice";
+import { useDispatch, useSelector } from "react-redux";
+import watch from 'redux-watch';
+export default function CalendarMonthView() {
 
-    const prevNextMonth = {
-        color: 'red',
-      };
-    useEffect(()=>{
-        renderCalendar(new Date());
-    }, [])
+    //titleText needs to be same name as a slice initial state
+    const {date}  = useSelector((state) => state.currentDate);
+    const dispatch = useDispatch();
     const monthNames = [
         "January",
         "February",
@@ -24,54 +24,39 @@ export default function Calendar() {
         "October",
         "November",
         "December",];
-    const [monthName, setMonthName] = useState(monthNames[new Date().getMonth()] + " " + new Date().getFullYear());
-    const [currentDate, setDate] = useState(new Date());
+  
     const [daysHTML, setDaysHTML] = useState("");
-    
-    const renderCalendar = (updatedDate) =>{
 
-        setDate(updatedDate);
-        setMonthName(monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear());
+    // store is THE redux store
+    
+    useEffect(()=>{
+        renderCalendar(new Date(date));
+        let w = watch(store.getState, 'currentDate.date');
+        const unsubscribe = store.subscribe(w((newVal, oldVal, objectPath) => 
+        {
+            console.log("subscribed");
+            if(newVal !== oldVal)
+                renderCalendar(new Date(newVal));
+        }));
+    return () => {
+        console.log("unsubscribing")
+        unsubscribe();
+    }
+    }, [])
+
+    const renderCalendar = (updatedDate) =>
+    {
+        dispatch(currentTitleAction({newTitle: monthNames[updatedDate.getMonth()] + " " + updatedDate.getFullYear()}))
         setDaysHTML(createCalendarDays(updatedDate));
-
     }
-
-    function prevMonth(e) {
-        e.preventDefault();
-        let updatedDate = currentDate;
-        updatedDate.setDate(1);
-        updatedDate.setMonth(currentDate.getMonth() - 1);
-        renderCalendar(updatedDate);
-      }
-    function nextMonth(e) {
-    e.preventDefault();
-    let updatedDate = currentDate;
-    updatedDate.setDate(1);
-    updatedDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar(updatedDate);
-    }
-
-    
+  
        return (
         <>
-            <div className="container">
-                <div className="calendar">
-                    <div className="month">
-                        <button className="transp-btn" onClick={prevMonth}><MdChevronLeft className="prev" size={62}/></button>
-
-                    <div className="date">
-                        <h1>{monthName}</h1>
-                    </div>
-                    <button onClick={nextMonth} className="transp-btn"><MdChevronRight className="next" size={62}/></button>
-
-            </div>
-            </div> </div>
-
             <div className="mt-5 calendar">
                     <Table bordered responsive="md" className="month">
                         <thead className="text-uppercase text-center">
                             <tr>
-                                <th>Week No.</th>
+                                <th>Week no.</th>
                                 <th>Mon</th>
                                 <th>Tue</th>
                                 <th>Wed</th>
