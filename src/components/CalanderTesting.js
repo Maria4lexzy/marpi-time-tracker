@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Card, Alert, Container, Table, Dropdown, DropdownButton, Item, Col, Row } from 'react-bootstrap'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft, MdFiberManualRecord } from 'react-icons/md';
+import Select from 'react-select';
 
 export default function CalanderTesting() {
+    const [calendarView, setCalendarView] = useState(0);
+    let calendarViewData =
+        [
+            { value: 'month', label: 'Month' },
+            { value: 'week', label: 'Week' },
+            { value: 'day', label: 'Day' }
+        ]
+    const handleCalendarViewChange = (e) => {
+        setCalendarView(e);
+    }
     return (
+
         <>
             <Container fluid className="calendar mt-5">
                 {/* Calendar Tools */}
@@ -27,11 +39,14 @@ export default function CalanderTesting() {
                         </div>
                         <div className="col-3">
                             <div>
-                                <DropdownButton variant="info" className="text-uppercase font-weight-bold calendar-tools-dropdown" id="month-view-button" title="View">
-                                    <Dropdown.Item href="#" >MONTH</Dropdown.Item>
+                                <div>
+                                    <Select variant="info" className="text-uppercase font-weight-bold calendar-tools-dropdown" options={calendarViewData} defaultValue={{ value: calendarViewData[0].value }, { label: calendarViewData[0].label }} />
+                                </div>
+                                {/* <DropdownButton variant="info" className="text-uppercase font-weight-bold calendar-tools-dropdown" id="month-view-button" title="View">
+                                    <Dropdown.Item  href="#" >MONTH</Dropdown.Item>
                                     <Dropdown.Item href="#">WEEK</Dropdown.Item>
                                     <Dropdown.Item href="#">DAY</Dropdown.Item>
-                                </DropdownButton>
+                                </DropdownButton> */}
                             </div>
                         </div>
                     </div>
@@ -272,21 +287,18 @@ export default function CalanderTesting() {
                                 </td>
 
                             </tr>
-                            <tr>
-                                <th className="hour-field">2:00</th>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                                <td data-date-time="24/01/2021 1:00"></td>
-                            </tr>
+
                         </tbody>
                     </Table>
+                    <div className="mt-5 day">
+                        <Table bordered responsive="md" className="day">
+
+                        </Table>
+                    </div>
 
                 </div>
             </Container>
         </>
+
     )
 }
