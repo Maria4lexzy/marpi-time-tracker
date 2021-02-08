@@ -44,12 +44,12 @@ export const createCalendarDays = (updatedDate) => {
     }
     let weekNumbers = getWeekNumbers(weekNumbersFromDate);
     let days = `<tr>  <td>
-    <div className="day-field">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
+    <div className="day-field" style="font-weight: bold;">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
     </div> </td>`
     numberOfPrintedWeekends++;
     //loop for creating previous month date numbers
     for (let x = firstDayIndex; x > 0; x--) {
-        days += `<td className="disabled"> <div className="day-field">${prevLastDay - x + 1}</div>
+        days += `<td> <div style="color:#E8E8E8;" className="day-field">${prevLastDay - x + 1}</div>
         <div className="events-wrapper"></div></td>`;
         totalDays++;
         numberOfPrintedDays++;
@@ -59,7 +59,7 @@ export const createCalendarDays = (updatedDate) => {
         if(numberOfPrintedDays%7===0 && numberOfPrintedDays !== 0)
         {
             days += `</tr> <tr> <td>
-            <div className="day-field">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
+            <div className="day-field" style="font-weight: bold;">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
             </div> </td>`;
             numberOfPrintedWeekends++;  
         } 
@@ -84,12 +84,12 @@ export const createCalendarDays = (updatedDate) => {
         if(numberOfPrintedDays%7===0)
         {
             days += `</tr> <tr> <td>
-            <div className="day-field">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
+            <div className="day-field" style="font-weight: bold;">${weekNumbers[numberOfPrintedWeekends]}</div> <div className="events-wrapper">
             </div> </td>`;
             numberOfPrintedWeekends++;
         }
         days += `<td className="disabled">
-        <div className="day-field ">${j}</div> <div className="events-wrapper">
+        <div className="day-field" style="color:#E8E8E8;">${j}</div> <div className="events-wrapper">
         </div> </td>`;
         numberOfPrintedDays++;
     }
