@@ -3,13 +3,13 @@ import '../assets/css/Calendar.css';
 import {createCalendarDays} from '../utils/calendar.js';
 import {Table} from 'react-bootstrap';
 import store from '../redux/configureStore';
-import {currentTitleAction} from "../redux/CalendarTitleSlice";
+import {currentTitleAction} from "../redux/CalendarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import watch from 'redux-watch';
 export default function CalendarMonthView() {
 
     //titleText needs to be same name as a slice initial state
-    const {date}  = useSelector((state) => state.currentDate);
+    const {date}  = useSelector((state) => state.calendar);
     const dispatch = useDispatch();
     const monthNames = [
         "January",
@@ -31,15 +31,13 @@ export default function CalendarMonthView() {
     
     useEffect(()=>{
         renderCalendar(new Date(date));
-        let w = watch(store.getState, 'currentDate.date');
+        let w = watch(store.getState, 'calendar.date');
         const unsubscribe = store.subscribe(w((newVal, oldVal, objectPath) => 
         {
-            console.log("subscribed");
             if(newVal !== oldVal)
                 renderCalendar(new Date(newVal));
         }));
     return () => {
-        console.log("unsubscribing")
         unsubscribe();
     }
     }, [])

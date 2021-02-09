@@ -106,7 +106,6 @@ const getWeekNumbers = date =>{
     }
    return weekNumbers;   
 }
-
 Date.prototype.getWeekNumber = function() {
     var date = new Date(this.getTime());
   date.setHours(0, 0, 0, 0);
@@ -118,3 +117,51 @@ Date.prototype.getWeekNumber = function() {
   return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
                         - 3 + (week1.getDay() + 6) % 7) / 7);
 }
+
+export const createWeekCalendar = (updateDate) => 
+{
+    
+   
+    let weekday = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    let weekCalendar = `<thead className="text-uppercase text-center"> <tr>`
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    //generate name of the days and date
+    let tempDate = new Date(updateDate);
+    for(let a = 0; a<7;a++)
+    {
+        if(a===0)
+            weekCalendar += `<th>${tempDate.getWeekNumber()}</th><th>${weekday[tempDate.getDay()]} ${updateDate.getDate()}`
+        else
+            weekCalendar += `<th>${weekday[tempDate.getDay()]} ${tempDate.getDate()}`
+        tempDate.setDate(tempDate.getDate() + 1);
+    }
+    weekCalendar += `</tr> </thead><tbody>`
+
+    for(let b=0;b<24;b++)
+    {
+        weekCalendar += `<tr><th className="hour-field">${b}:00</th>`
+        tempDate = new Date(updateDate);
+        for(let c=0;c<7;c++)
+        {
+            weekCalendar += `<td data-date-time="${tempDate.toLocaleDateString(undefined, options)} ${b}:00>
+            <div className="event event-short"></div></td>`
+            tempDate.setDate(tempDate.getDate() + 1);
+        }
+    }
+    weekCalendar += `</tr></tbody>`
+    return weekCalendar;
+}
+export const getDatesFromWeekNo = (weekNumber,year) =>{
+
+    var simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+    var dow = simple.getDay();
+    var ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    return ISOweekStart;
+
+}
+
+
