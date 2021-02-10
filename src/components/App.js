@@ -1,41 +1,43 @@
-import React from 'react';
-import Signup from "./Signup";
-import { AuthProvider } from '../contexts/AuthContext';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Dashboard from './Dashboard';
-import Login from './Login';
-import PrivateRoute from './PrivateRoute';
-import ForgotPassword from './ForgotPassword';
-import UpdateProfile from './UpdateProfile';
+import React, { Component } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Navigation from './Navigation'
+import SignUpPage from './SignUp';
+import SignInPage from './SignIn';
+import PasswordForgetPage from './PasswordForget';
+import AccountPage from './Account'
+import HomePage from './Home';
+import AdminPage from './Admin'
+import LandingPage from './Landing';
 import * as ROUTES from '../constants/routes';
 import Calendar from './Calendar';
-import CalendarTesting from './CalanderTesting';
+
+import { withAuthentication } from './Session';
 
 
-function App() {
-  return (
 
+const App = () => (
+  <Router>
+    <div>
+      alkjfdlsjf
+      <Navigation />
 
-    <Router>
-      <AuthProvider>
-        <Navigation />
-        <Switch>
-          {/* only match this slash path */}
-          <PrivateRoute exact path="/" component={Dashboard}></PrivateRoute>
-          <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
-          <Route path={ROUTES.SIGN_UP} component={Signup}></Route>
-          <Route path={ROUTES.LOG_IN} component={Login}></Route>
-          <Route path={ROUTES.CALENDAR} component={Calendar}></Route>
-          <Route path={ROUTES.FORGET_PASSWORD} component={ForgotPassword}></Route>
-          <Route path={ROUTES.CALENDAR_T} component={CalendarTesting}></Route>
+      <hr />
 
-        </Switch>
-      </AuthProvider>
-    </Router>
+      {/* <Route exact path={ROUTES.LANDING} component={LandingPage} /> */}
+      <Route path={ROUTES.SIGN_UP} component={SignUpPage} />
+      <Route path={ROUTES.SIGN_IN} component={SignInPage} />
+      <Route path={ROUTES.LANDING} component={LandingPage} />
 
+      <Route
+        path={ROUTES.PASSWORD_FORGET}
+        component={PasswordForgetPage}
+      />
+      <Route path={ROUTES.HOME} component={HomePage} />
+      <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+      <Route path={ROUTES.ADMIN} component={AdminPage} />
+      <Route path={ROUTES.CALENDAR} component={Calendar} />
+    </div>
+  </Router>
+);
 
-  );
-}
-
-export default App;
+export default withAuthentication(App);

@@ -5,13 +5,16 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from "react-redux";
 import store from './redux/configureStore';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Firebase, { FirebaseContext } from './components/Firebase';
 
 
 ReactDOM.render(
   <React.StrictMode>
-    <Provider store={store}>
-    <App />
-    </Provider>
+    <FirebaseContext.Provider value={new Firebase()}>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </FirebaseContext.Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );
