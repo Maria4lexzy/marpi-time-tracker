@@ -1,7 +1,7 @@
 import React from 'react';
 import app from 'firebase/app';
 import 'firebase/auth';
-
+import 'firebase/database';
 const config = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -13,28 +13,62 @@ const config = {
 };
 
 class Firebase {
-    constructor() {
-        app.initializeApp(config);
+  constructor() {
+    app.initializeApp(config);
 
-        this.auth = app.auth();
+    this.auth = app.auth();
+    this.db = app.database();
+  }
 
-    }
+  // *** Auth API ***
 
+  doCreateUserWithEmailAndPassword = (email, password) =>
+    this.auth.createUserWithEmailAndPassword(email, password);
 
-    // *** Auth API ***
+  doSignInWithEmailAndPassword = (email, password) =>
+    this.auth.signInWithEmailAndPassword(email, password);
 
-    doCreateUserWithEmailAndPassword = (email, password) =>
-        this.auth.createUserWithEmailAndPassword(email, password);
+  doSignOut = () => this.auth.signOut();
 
-    doSignInWithEmailAndPassword = (email, password) =>
-        this.auth.signInWithEmailAndPassword(email, password);
+  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
-    doSignOut = () => this.auth.signOut();
+  doPasswordUpdate = password =>
+    this.auth.currentUser.updatePassword(password);
 
-    doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
+  // *** Merge Auth and DB User API *** //
 
-    doPasswordUpdate = password =>
-        this.auth.currentUser.updatePassword(password);
+  onAuthUserListener = (next, fallback) =>
+    this.auth.onAuthStateChanged(authUser => {
+      if (authUser) {
+        this.user(authUser.uid)
+          .once('value')
+          .then(snapshot => {
+            const dbUser = snapshot.val();
+
+            // default empty roles
+            if (!dbUser.roles) {
+              dbUser.roles = [];
+            }
+
+            // merge auth and db user
+            authUser = {
+              uid: authUser.uid,
+              email: authUser.email,
+              ...dbUser,
+            };
+
+            next(authUser);
+          });
+      } else {
+        fallback();
+      }
+    });
+
+  // *** User API ***
+
+  user = uid => this.db.ref(`users/${uid}`);
+
+  users = () => this.db.ref('users');
 }
 
 export default Firebase;
