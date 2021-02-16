@@ -1,74 +1,95 @@
-import React from 'react';
-import app from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
-const config = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    databaseUrl: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
-};
+import React , { useContext, useState } from 'react';
+import { Router } from "@reach/router";
+import SignIn from "../SignIn/SignIn";
+import SignUp from "../SignUp/SignUp";
+import ProfilePage from "./ProfilePage";
+import PasswordReset from "./PasswordReset";
+import * as ROUTES from '../../constants/routes';
+import { Navbar, Nav, Button, NavDropdown } from 'react-bootstrap'
+import { UserContext } from "../../providers/UserProvider";
+import {auth} from "../../utils/firestore";
 
-class Firebase {
-  constructor() {
-    app.initializeApp(config);
+const Firebase = () => {
+  
+    const [activeView, setActiveView] = useState("WORKER");
+    const user = useContext(UserContext);
+    return (
 
-    this.auth = app.auth();
-    this.db = app.database();
-  }
+        
+          user ?
+          <>
+          <NavigationAuth/>
+            {user.roles.admin && <ProfilePage /> || user.roles.manager && <ProfilePage /> || user.roles.worker && <ProfilePage />}
 
-  // *** Auth API ***
+          </>
+          
+        :
+        <>
+          <NavigationNonAuth/>
+          <Router>
+            <SignUp path="signUp" />
+            <SignIn path="/" />
+            <PasswordReset path = "passwordReset" />
+          </Router>
+        </>
+    );
+}
+const NavigationAuth = () => {
+     
+  return (
+      <>
+          <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+              <Navbar.Brand href={ROUTES.SIGN_IN}>React-Bootstrap</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="mr-auto">
+                      <Nav.Link href="#features">Features</Nav.Link>
+                      <Nav.Link href="#pricing">Pricing</Nav.Link>
+                      <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                          <NavDropdown.Item href={ROUTES.SIGN_IN}>LOGIN</NavDropdown.Item>
+                          <NavDropdown.Item href={ROUTES.SIGN_UP}>SIGN UP</NavDropdown.Item>
+                          <NavDropdown.Divider />
+                          <NavDropdown.Item href={ROUTES.CALENDAR_T}>CALENDAR t </NavDropdown.Item>                          
+                      </NavDropdown>
+                  </Nav>
+                  <Nav>
+                      <Nav.Link ><Button variant="link" onClick = {() => {auth.signOut()}}>Log Out</Button>
+                      </Nav.Link>
+                      <Nav.Link eventKey={2} href="#memes">
+                          Dank memes
+                   </Nav.Link>
+                  </Nav>
+              </Navbar.Collapse>
+          </Navbar>
+      </>
+  )
+}
+const NavigationNonAuth = () => {
 
-  doCreateUserWithEmailAndPassword = (email, password) =>
-    this.auth.createUserWithEmailAndPassword(email, password);
 
-  doSignInWithEmailAndPassword = (email, password) =>
-    this.auth.signInWithEmailAndPassword(email, password);
-
-  doSignOut = () => this.auth.signOut();
-
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
-
-  doPasswordUpdate = password =>
-    this.auth.currentUser.updatePassword(password);
-
-  // *** Merge Auth and DB User API *** //
-
-  onAuthUserListener = (next, fallback) =>
-    this.auth.onAuthStateChanged(authUser => {
-      if (authUser) {
-        this.user(authUser.uid)
-          .once('value')
-          .then(snapshot => {
-            const dbUser = snapshot.val();
-
-            // default empty roles
-            if (!dbUser.roles) {
-              dbUser.roles = [];
-            }
-
-            // merge auth and db user
-            authUser = {
-              uid: authUser.uid,
-              email: authUser.email,
-              ...dbUser,
-            };
-
-            next(authUser);
-          });
-      } else {
-        fallback();
-      }
-    });
-
-  // *** User API ***
-
-  user = uid => this.db.ref(`users/${uid}`);
-
-  users = () => this.db.ref('users');
+  return(
+  <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href={ROUTES.SIGN_IN}>React-Bootstrap</Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+              <Nav.Link href="#features">Features</Nav.Link>
+              <Nav.Link href="#pricing">Pricing</Nav.Link>
+              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                  <NavDropdown.Item href={ROUTES.SIGN_IN}>LOGIN</NavDropdown.Item>
+                  <NavDropdown.Item href={ROUTES.SIGN_UP}>SIGN UP</NavDropdown.Item>
+                  <NavDropdown.Item href={ROUTES.CALENDAR}>CALENDAR</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href={ROUTES.CALENDAR_T}>CALENDAR t </NavDropdown.Item>
+              </NavDropdown>
+          </Nav>
+          <Nav>
+              <Nav.Link eventKey={2} href="#memes">
+                  Dank memes
+                   </Nav.Link>
+          </Nav>
+      </Navbar.Collapse>
+  </Navbar>)
 }
 
 export default Firebase;
