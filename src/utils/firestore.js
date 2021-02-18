@@ -42,11 +42,17 @@ export const generateUserDocument = async (user) => {
     return await getUserDocument(user.uid);
   };
 
+  
+
   const writeUserToDB = async (user,userRef,workingNumber) =>{
     console.log(user);
     const email =  user.email;
     const photoURL = null;
-    console.log(email + photoURL + displayName + roles + workingNumber);
+    console.log(email);
+    console.log(roles);
+    console.log(displayName);
+    console.log(workingNumber);
+  
     try {
       await userRef.set({
         displayName,
@@ -75,12 +81,61 @@ return await firestore.doc(`users/${uid}`).get().then((doc) => {
     return  "Error getting document:", error;
 });
 }
+
+export const sendResetEmail = email => {
+    auth.sendPasswordResetEmail(email)
+      .then(() => {
+       console.log("email sent");
+      })
+      .catch((error) => {
+        return "Error resetting password" + error;
+      });
+  };
+
+
+
+
+export const updateUserPassword=(currentPassword, newPassword)=>{
+  var user = auth.currentUser;
+  const emailCred  = firebase.auth.EmailAuthProvider.credential(
+                     user.email, currentPassword);
+  user.reauthenticateWithCredential(emailCred)
+  .then(() => {
+      // User successfully reauthenticated.
+      return user.updatePassword(newPassword);
+  })
+  .catch(error => {
+      console.log(error.message);  
+      return error.message;
+  });
+
+}
+export const updateUserEmail=(currentPassword, newEmail)=>{
+ 
+  var user = auth.currentUser;
+  const emailCred  = firebase.auth.EmailAuthProvider.credential(
+                     user.email, currentPassword);
+  user.reauthenticateWithCredential(emailCred)
+  .then(() => {
+      // User successfully reauthenticated.
+      return user.updateEmail(newEmail);
+  })
+  .catch(error => {
+      console.log(error.message);  
+      return error.message;
+  });
+
+  
+}
 export const createNewUser = async (displayN,email,password,rolesParam) =>
 {
     try{
-       displayName = displayN;
-       roles = rolesParam;
-       return await auth.createUserWithEmailAndPassword(email, password);
+      displayName = displayN;
+      roles = rolesParam;
+      var authApp = firebase.initializeApp(firebaseConfig, 'authApp');
+      var detachedAuth = authApp.auth();
+      const registeredUser = await detachedAuth.createUserWithEmailAndPassword(email, password);
+      return await generateUserDocument(registeredUser.user);
 
       }
       catch(error){
@@ -88,7 +143,6 @@ export const createNewUser = async (displayN,email,password,rolesParam) =>
        return error;
       }
 }
-
 export const signInWithEmailAndPassword = async (email, password) => {
 
 return await auth.signInWithEmailAndPassword(email,password)

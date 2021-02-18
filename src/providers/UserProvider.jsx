@@ -1,6 +1,6 @@
 import React, { Component, createContext } from "react";
 import { auth, generateUserDocument } from "../utils/firestore";
-
+ 
 export const UserContext = createContext({ user: null });
 
 class UserProvider extends Component {
