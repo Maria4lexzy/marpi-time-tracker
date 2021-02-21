@@ -19,7 +19,7 @@ export const getWeekNumbers = date =>{
     }
    return weekNumbers;   
 }
-
+// eslint-disable-next-line no-extend-native
 Date.prototype.getWeekNumber = function() {
     var date = new Date(this.getTime());
   date.setHours(0, 0, 0, 0);
@@ -32,7 +32,7 @@ Date.prototype.getWeekNumber = function() {
                         - 3 + (week1.getDay() + 6) % 7) / 7);
 }
 
-export const getDatesFromWeekNo = (weekNumber,year) =>{
+export const getFirstDateFromWeekNo = (weekNumber,year) =>{
 
     var simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
     var dow = simple.getDay();
@@ -44,3 +44,9 @@ export const getDatesFromWeekNo = (weekNumber,year) =>{
     return ISOweekStart;
 
 }
+
+export const weeksInYear = (year) =>{
+    var d = new Date(year, 11, 31);
+    return d.getWeekNumber();
+  }
+  

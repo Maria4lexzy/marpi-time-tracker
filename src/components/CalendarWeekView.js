@@ -1,54 +1,28 @@
 import React, { useState, useEffect, createElement } from 'react';
 import {Table} from 'react-bootstrap'
 import store from '../redux/configureStore';
-import {currentTitleAction, selectedWeekAction, currentDateAction} from "../redux/CalendarSlice";
+import {currentTitleAction} from "../redux/CalendarSlice";
 import { useDispatch, useSelector } from "react-redux";
 import watch from 'redux-watch';
-import {getDatesFromWeekNo} from '../utils/calendar'
 import '../assets/css/Calendar.css';
 export default function CalendarWeekView() {
 
 
   const [calendarHeader, setCalendarHeader] = useState([]);
   const [calendarBody, setCalendarBody] = useState([]);
-  const {week,date} = useSelector((state) => state.calendar);
+  const {fistDateInWeek} = useSelector((state) => state.calendar);
   const dispatch = useDispatch();
 
   useEffect(()=>{
-    if(week === 0)
+    const renderCalendar = (firstDateInWeek) =>
     {
-        let firstDay = new Date(date);
-        renderCalendar(firstDay.getWeekNumber()); 
-    }
-    else
-        renderCalendar(week); 
-    
-    let w = watch(store.getState, 'calendar.week');
-    const unsubscribe = store.subscribe(w((newVal, oldVal, objectPath) => 
-    {
-        if(newVal !== oldVal)
-            renderCalendar(newVal);
-    }));
-    return () => {
-        unsubscribe();
-    }
-    }, [])
-
-    const renderCalendar = (weekNumber) =>
-    {
-        if(weekNumber === 0)
-        {
-            let firstDay = new Date(date);
-            weekNumber = firstDay.getWeekNumber(); 
-        }
-        var options = { year: 'numeric', month: 'long', day: 'numeric' };
-        let firstWeekDay = getDatesFromWeekNo(weekNumber,new Date(date).getFullYear());
-        let lastWeekDay = new Date(firstWeekDay);
+        
+        var options = { year: 'numeric', month: 'long', day: 'numeric' };  
+        let firstDate = new Date(firstDateInWeek);  
+        let lastWeekDay = new Date(firstDateInWeek);
         lastWeekDay.setDate(lastWeekDay.getDate()+6);
-        dispatch(currentTitleAction({newTitle: firstWeekDay.toLocaleDateString(undefined, options)+ " - " + lastWeekDay.toLocaleDateString(undefined, options)}));
-        dispatch(selectedWeekAction({newWeek: weekNumber}));
-        dispatch(currentDateAction({newDate: firstWeekDay.toString()}));
-        createWeekCalendar(firstWeekDay);
+        dispatch(currentTitleAction({newTitle: firstDate.toLocaleDateString(undefined, options)+ " - " + lastWeekDay.toLocaleDateString(undefined, options)}));
+        createWeekCalendar(firstDate);
     }
 
     const createWeekCalendar = (updateDate) =>{
@@ -61,11 +35,11 @@ export default function CalendarWeekView() {
         {
             if(a===0)
             {
-                header.push(<th>{tempDate.getWeekNumber()}</th>);
-                header.push(<th>{weekday[tempDate.getDay()]} {updateDate.getDate()}</th>);
+                header.push(<th key="weekNo">{tempDate.getWeekNumber()}</th>);
+                header.push(<th key={tempDate.getDay().toString()}>{weekday[tempDate.getDay()]} {updateDate.getDate()}</th>);
             }
             else
-                header.push(<th>{weekday[tempDate.getDay()]} {tempDate.getDate()}</th>);
+                header.push(<th key={tempDate.getDay().toString()}>{weekday[tempDate.getDay()]} {tempDate.getDate()}</th>);
 
             tempDate.setDate(tempDate.getDate() + 1);
         }
@@ -77,26 +51,38 @@ export default function CalendarWeekView() {
         {
             tempDate = new Date(updateDate);
             const trData = [];
-            trData.push(<th className="hour-field">{b}:00</th>);
+            trData.push(<th key={b + `h`} id={b + `h`} className="hour-field">{b}:00</th>);
             for(let c=0;c<7;c++)
             {
-                trData.push(<td id={tempDate.toLocaleDateString(undefined, options) + ` ` + c + `:00`}><div className="event event-short"></div></td>);
+                trData.push(<td key={b + `h` + c + `col`} ><div id={tempDate.toLocaleDateString(undefined, options) + ` ` + b + `:00`} className="event event-short"></div></td>);
                 tempDate.setDate(tempDate.getDate() + 1);
             }
-            const table = createElement('tr',{},trData);
+            const table = createElement('tr',{key: b.toString()},trData);
+
             body.push(table);
 
         }
         setCalendarBody(body);
     }
-   
 
-       return (
+    renderCalendar(new Date(fistDateInWeek)); 
+    let w = watch(store.getState, 'calendar.fistDateInWeek');
+    const unsubscribe = store.subscribe(w((newVal, oldVal, objectPath) => 
+    {
+        if(newVal !== oldVal)
+            renderCalendar(newVal);
+    }));
+    return () => {
+        unsubscribe();
+    }
+    }, [])
+
+    return (
         <>
           <div className="mt-5 week">
                     <Table bordered responsive="md" className="month">
-                        <thead className="text-uppercase text-center"> 
-                        <tr>
+                        <thead className="text-uppercase text-center" key="topHeader"> 
+                        <tr key="header">
                             {calendarHeader}
                         </tr>
                         </thead>

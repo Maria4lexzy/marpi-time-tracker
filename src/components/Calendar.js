@@ -2,15 +2,17 @@ import React, { useState, useEffect } from 'react';
 import '../assets/css/Calendar.css';
 import CalendarMonthView from './CalendarMonthView'
 import CalendarWeekView from './CalendarWeekView'
-import { Button, Dropdown, DropdownButton} from 'react-bootstrap'
+import CalendarDayView from './CalendarDayView'
+import { Button} from 'react-bootstrap'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft} from 'react-icons/md';
-import {currentDateAction, selectedWeekAction} from "../redux/CalendarSlice"
+import {currentDateAction,fistDateInWeekAction,dayDisplayedAction} from "../redux/CalendarSlice"
 import { useSelector, useDispatch } from "react-redux";
 import Select from 'react-select';
+import {getFirstDateFromWeekNo} from '../utils/calendar'
 export default function Calendar() {
   
   
-    const {date,week,calendarTitle}  = useSelector((state) => state.calendar);
+    const {date,calendarTitle,fistDateInWeek,dayDisplayed}  = useSelector((state) => state.calendar);
     let calendarViewData =
     [
         { value: "MONTH", label: 'Month' },
@@ -22,7 +24,10 @@ export default function Calendar() {
   
     useEffect(()=>{
         let today = new Date();
-        dispatch(currentDateAction({newDate: today.toString()}))
+        let firstDayInMonth = new Date(today.getFullYear(),today.getMonth(),1)
+        dispatch(currentDateAction({newDate: firstDayInMonth.toString()}));
+        let weekNumber = today.getWeekNumber();
+        dispatch(fistDateInWeekAction({newWeekDate: getFirstDateFromWeekNo(weekNumber,today.getFullYear()).toString()}));
         }, []);
 
     const prevBtn = () =>{
@@ -35,13 +40,12 @@ export default function Calendar() {
                 }
             case "WEEK":
                 {
-                    console.log(activeView);
                     weekViewChange(false);
                     break;
                 }
-            case "day":
+            case "DAY":
                 {
-
+                    dayViewChange(false)
                     break;
                 }
             default:
@@ -64,8 +68,9 @@ export default function Calendar() {
                     weekViewChange(true);
                     break;
                 }
-            case "day":
+            case "DAY":
                 {
+                    dayViewChange(true)
                     break;
                 }
             default:
@@ -76,22 +81,15 @@ export default function Calendar() {
         }
     }
     const todayBtn = () => {
+
         let today = new Date();
-        today.setHours(0,0,0,0);
-        today.setDate(1);
-        let storedDate = new Date(date);
-        storedDate.setHours(0,0,0,0);
-        if(today.getTime() !== storedDate.getTime())
-        {
-            dispatch(currentDateAction({newDate: today.toString()}));
-            if(activeView === "WEEK")
-            {
-                dispatch(selectedWeekAction({newWeek: 0}));
-            }
-        }
+        let firstDayInMonth = new Date(today.getFullYear(),today.getMonth(),1)
+        dispatch(currentDateAction({newDate: firstDayInMonth.toString()}));
+        let weekNumber = today.getWeekNumber();
+        dispatch(fistDateInWeekAction({newWeekDate: getFirstDateFromWeekNo(weekNumber,today.getFullYear()).toString()}));
+        dispatch(dayDisplayedAction({newDayDisplayed: new Date().toString()}));
        
     }
-
     const handleDropdownChange = selectedOption => {
         if(activeView !== selectedOption.value)
         {
@@ -100,7 +98,6 @@ export default function Calendar() {
       };
     const monthViewChange = type =>{
         //true next button was pressed
-        dispatch(selectedWeekAction({newWeek: 0}));
         if(type)
         {
             let updatedDate = new Date(date);
@@ -119,11 +116,31 @@ export default function Calendar() {
     const weekViewChange = type =>{
         if(type)
         {
-            dispatch(selectedWeekAction({newWeek: week+1}));
+            let addDays = new Date(fistDateInWeek);
+            addDays.setDate(addDays.getDate()+7);
+            dispatch(fistDateInWeekAction({newWeekDate: addDays.toString()}));
         }
         else
         {
-            dispatch(selectedWeekAction({newWeek: week-1}));
+            let addDays = new Date(fistDateInWeek);
+            addDays.setDate(addDays.getDate()-7);
+            dispatch(fistDateInWeekAction({newWeekDate: addDays.toString()}));
+        }
+    }
+    const dayViewChange = type =>{
+        if(type)
+        {
+            let addDays = new Date(dayDisplayed);
+            addDays.setDate(addDays.getDate()+1);
+            dispatch(dayDisplayedAction({newDayDisplayed: addDays.toString()}));
+            dispatch(fistDateInWeekAction({newWeekDate: getFirstDateFromWeekNo(addDays.getWeekNumber(),addDays.getFullYear()).toString()}));
+        }
+        else
+        {
+            let addDays = new Date(dayDisplayed);
+            addDays.setDate(addDays.getDate()-1);
+            dispatch(dayDisplayedAction({newDayDisplayed: addDays.toString()}));
+            dispatch(fistDateInWeekAction({newWeekDate: getFirstDateFromWeekNo(addDays.getWeekNumber(),addDays.getFullYear()).toString()}));
         }
     }
     return (
@@ -156,7 +173,8 @@ export default function Calendar() {
 
     </div>
     <div> {activeView === 'MONTH' && <CalendarMonthView />}
-    {activeView === 'WEEK' && <CalendarWeekView />}</div>
+    {activeView === 'WEEK' && <CalendarWeekView />}
+    {activeView === 'DAY' && <CalendarDayView />}</div>
     </>
     )
 }

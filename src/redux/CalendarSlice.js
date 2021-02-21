@@ -3,7 +3,8 @@ const calendarSlice = createSlice({
     name: "calendar",
     initialState: {
         date: "",
-        week: 0,
+        dayDisplayed: "",
+        fistDateInWeek: "",
         calendarTitle: "",
         viewType: "MONTH"
     },
@@ -15,10 +16,15 @@ const calendarSlice = createSlice({
           const { newDate} = action.payload;
           state.date = newDate;
       },
-      selectedWeekAction: (state,action) =>
+      dayDisplayedAction: (state,action) =>
       {
-          const { newWeek} = action.payload;
-          state.week = newWeek;
+          const { newDayDisplayed} = action.payload;
+          state.dayDisplayed = newDayDisplayed;
+      },
+      fistDateInWeekAction: (state,action) =>
+      {
+          const { newWeekDate} = action.payload;
+          state.fistDateInWeek = newWeekDate;
       },
       currentTitleAction: (state,action) =>
       {
@@ -33,5 +39,5 @@ const calendarSlice = createSlice({
     }
   });
 
-export const {currentDateAction, selectedWeekAction, currentTitleAction, currentViewAction} = calendarSlice.actions;
+export const {currentDateAction, dayDisplayedAction, currentTitleAction, currentViewAction, fistDateInWeekAction} = calendarSlice.actions;
 export default calendarSlice.reducer;
