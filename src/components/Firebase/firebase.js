@@ -11,6 +11,7 @@ import { UserContext } from "../../providers/UserProvider";
 import {auth} from "../../utils/firestore";
 import { Route } from 'react-router-dom';
 
+
 const Firebase = () => {
   
 
@@ -21,7 +22,7 @@ const Firebase = () => {
           user ?
           <>
           <NavigationAuth/>
-            { user.roles.manager && <ManagerProfilePage /> || user.roles.admin && <ManagerProfilePage /> || user.roles.worker && <WorkerProfilePage />}
+            { user[1].roles.manager && <ManagerProfilePage /> || user[1].roles.admin && <ManagerProfilePage /> || user[1].roles.worker && <WorkerProfilePage />}
 
           </>
           
@@ -33,6 +34,7 @@ const Firebase = () => {
             <SignIn path={ROUTES.SIGN_IN} />
             <PasswordReset path = {ROUTES.PASSWORD_FORGET} />
             <CreateUser path={ROUTES.CREATE_USER}/>
+            <WorkerProfilePage path={ROUTES.WORKER_PROFILE}/>
              {/* <Route exact path={ROUTES.LANDING} component={LandingPage} /> */}
             {/* <Route path={ROUTES.CREATE_USER} component={CreateUser} />
             <Route path={ROUTES.SIGN_IN} component={SignIn} /> */}

@@ -1,8 +1,10 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
+let displayName, roles, photoURL;
+const userDocumentPromises=[];
 
-let displayName, roles;
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -14,7 +16,7 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
+export const storage = firebase.storage();
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 const provider = new firebase.auth.GoogleAuthProvider();
@@ -39,32 +41,66 @@ export const generateUserDocument = async (user) => {
       })
      
     }
-    return await getUserDocument(user.uid);
+    return await getAllUserData(user.uid);
   };
 
   
 
   const writeUserToDB = async (user,userRef,workingNumber) =>{
-    console.log(user);
     const email =  user.email;
-    const photoURL = null;
-    console.log(email);
-    console.log(roles);
-    console.log(displayName);
-    console.log(workingNumber);
-  
+    const userPublicRef = firestore.doc(`userPublic/${user.uid}`);
     try {
       await userRef.set({
-        displayName,
         email,
-        photoURL,
         roles:{admin: roles[0],manager: roles[1],worker: roles[2]},
         workingNumber
+      });
+      await userPublicRef.set({
+        displayName,
+        photoURL
       });
     } catch (error) {
       console.error("Error creating user document", error);
     }
   }
+
+  export const writeImageToDb = async ( urlRef)=>{
+    var user = auth.currentUser;
+    const userPublicRef = firestore.doc(`userPublic/${user.uid}`);
+     photoURL=urlRef;
+   console.log(urlRef);
+   console.log(photoURL);
+    try {
+      await userPublicRef.update({
+        photoURL: urlRef
+      });
+    } catch (error) {
+      console.error("Error creating user document", error);
+    }
+  }
+
+ const getAllUserData=async uid=>{
+  const userResult = [await getUserProfile(uid), await getUserDocument(uid)];
+
+  console.log(userDocumentPromises[0]);
+  return await userResult;
+ }
+  const getUserProfile = async uid => {
+    if (!uid) return null;
+    
+    return await firestore.doc(`userPublic/${uid}`).get().then((doc) => {
+        if (doc.exists) {
+    
+            return doc.data();
+        } else {
+            // doc.data() will be undefined in this case
+            return "No such document!";
+        }
+    }).catch((error) => {
+        return  "Error getting document:"+ error;
+    });
+    }
+
 
 const getUserDocument = async uid => {
 if (!uid) return null;
@@ -78,10 +114,9 @@ return await firestore.doc(`users/${uid}`).get().then((doc) => {
         return "No such document!";
     }
 }).catch((error) => {
-    return  "Error getting document:", error;
+    return  "Error getting document:"+ error;
 });
 }
-
 export const sendResetEmail = email => {
     auth.sendPasswordResetEmail(email)
       .then(() => {
@@ -91,10 +126,6 @@ export const sendResetEmail = email => {
         return "Error resetting password" + error;
       });
   };
-
-
-
-
 export const updateUserPassword=(currentPassword, newPassword)=>{
   var user = auth.currentUser;
   const emailCred  = firebase.auth.EmailAuthProvider.credential(
@@ -153,3 +184,4 @@ return await auth.signInWithEmailAndPassword(email,password)
     return error;
 });
 };
+
