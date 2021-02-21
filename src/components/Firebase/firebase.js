@@ -1,40 +1,108 @@
-import React from 'react';
-import app from 'firebase/app';
-import 'firebase/auth';
-
-const config = {
-    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-    databaseUrl: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
-};
-
-class Firebase {
-    constructor() {
-        app.initializeApp(config);
-
-        this.auth = app.auth();
-
-    }
+import React , { useContext, useState } from 'react';
+import { Router } from "@reach/router";
+import SignIn from "../SignIn";
+import CreateUser from "../CreateUser";
+import ManagerProfilePage from "./ManagerProfilePage";
+import WorkerProfilePage from "./WorkerProfilePage";
+import PasswordReset from "./PasswordReset";
+import * as ROUTES from '../../constants/routes';
+import { Navbar, Nav, Button, NavDropdown } from 'react-bootstrap'
+import { UserContext } from "../../providers/UserProvider";
+import {auth} from "../../utils/firestore";
+import { Route } from 'react-router-dom';
 
 
-    // *** Auth API ***
+const Firebase = () => {
+  
 
-    doCreateUserWithEmailAndPassword = (email, password) =>
-        this.auth.createUserWithEmailAndPassword(email, password);
+    const user = useContext(UserContext);
+    return (
 
-    doSignInWithEmailAndPassword = (email, password) =>
-        this.auth.signInWithEmailAndPassword(email, password);
+        
+          user ?
+          <>
+          <NavigationAuth/>
+            { user[1].roles.manager && <ManagerProfilePage /> || user[1].roles.admin && <ManagerProfilePage /> || user[1].roles.worker && <WorkerProfilePage />}
 
-    doSignOut = () => this.auth.signOut();
+          </>
+          
+        :
+        <>
+          <NavigationNonAuth/>
+          <Router>
+            <CreateUser path={ROUTES.CREATE_USER} />
+            <SignIn path={ROUTES.SIGN_IN} />
+            <PasswordReset path = {ROUTES.PASSWORD_FORGET} />
+            <CreateUser path={ROUTES.CREATE_USER}/>
+            <WorkerProfilePage path={ROUTES.WORKER_PROFILE}/>
+             {/* <Route exact path={ROUTES.LANDING} component={LandingPage} /> */}
+            {/* <Route path={ROUTES.CREATE_USER} component={CreateUser} />
+            <Route path={ROUTES.SIGN_IN} component={SignIn} /> */}
+            {/* <Route path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage} /> */}
+            {/* <Route path={ROUTES.HOME} component={HomePage} />
+            <Route path={ROUTES.ACCOUNT} component={AccountPage} />
+            <Route path={ROUTES.ADMIN} component={AdminPage} /> */}
+            
+          </Router>
+        </>
+    );
+}
+const NavigationAuth = () => {
+     
+  return (
+      <>
+          <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+              <Navbar.Brand href={ROUTES.SIGN_IN}>React-Bootstrap</Navbar.Brand>
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                  <Nav className="mr-auto">
+                      <Nav.Link href="#features">Features</Nav.Link>
+                      <Nav.Link href="#pricing">Pricing</Nav.Link>
+                      <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                          <NavDropdown.Item href={ROUTES.SIGN_IN}>LOGIN</NavDropdown.Item>
+                          <NavDropdown.Item href={ROUTES.CREATE_USER}>SIGN UP</NavDropdown.Item>
+                          <NavDropdown.Divider />
+                          <NavDropdown.Item href={ROUTES.CALENDAR_T}>CALENDAR t </NavDropdown.Item>                          
+                      </NavDropdown>
+                  </Nav>
+                  <Nav>
+                      <Nav.Link ><Button variant="link" onClick = {() => {auth.signOut()}}>Log Out</Button>
+                      </Nav.Link>
+                      <Nav.Link eventKey={2} href="#memes">
+                          Dank memes
+                   </Nav.Link>
+                  </Nav>
+              </Navbar.Collapse>
+          </Navbar>
+      </>
+  )
+}
+const NavigationNonAuth = () => {
 
-    doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
 
-    doPasswordUpdate = password =>
-        this.auth.currentUser.updatePassword(password);
+  return(
+  <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+      <Navbar.Brand href={ROUTES.SIGN_IN}>React-Bootstrap</Navbar.Brand>
+      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+      <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="mr-auto">
+              <Nav.Link href="#features">Features</Nav.Link>
+              <Nav.Link href="#pricing">Pricing</Nav.Link>
+              <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+                  <NavDropdown.Item href={ROUTES.SIGN_IN}>LOGIN</NavDropdown.Item>
+                  <NavDropdown.Item href={ROUTES.CREATE_USER}>SIGN UP</NavDropdown.Item>
+                  <NavDropdown.Item href={ROUTES.CALENDAR}>CALENDAR</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item href={ROUTES.CALENDAR_T}>CALENDAR t </NavDropdown.Item>
+              </NavDropdown>
+          </Nav>
+          <Nav>
+              <Nav.Link eventKey={2} href="#memes">
+                  Dank memes
+                   </Nav.Link>
+          </Nav>
+      </Navbar.Collapse>
+  </Navbar>)
 }
 
 export default Firebase;

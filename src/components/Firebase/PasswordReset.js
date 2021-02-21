@@ -1,12 +1,12 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useRef } from "react";
+import { Link } from "@reach/router";
 import { Form, Button, Card, Alert } from 'react-bootstrap'
-import { useAuth } from './Firebase/context';
-import { Link } from 'react-router-dom';
+import {sendResetEmail} from '../../utils/firestore';
 
-export default function Forgot() {
+const PasswordReset = () => {
 
-    const emailRef = useRef();
-    const { resetPassword } = useAuth();
+
+  const emailRef = useRef();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
@@ -18,17 +18,20 @@ export default function Forgot() {
             setMessage('');
             setError('');
             setLoading(true);
-            await resetPassword(emailRef.current.value);
+            await sendResetEmail(emailRef.current.value);
             setMessage('Check your inbox for further instructions');
-        } catch {
+        } catch(e) {
+          console.log(e.message);
             setError('Failed to reset password');
         }
         setLoading(false);
 
     }
-    return (
-        <>
-            <Card>
+  
+  return (
+    <>
+   
+             <Card>
                 <Card.Body>
                     <h2 className="text-center">Password Reset</h2>
                     {error && <Alert variant="danger">{error}</Alert>}
@@ -42,24 +45,29 @@ export default function Forgot() {
                         <Button disabled={loading} className="w-100" type="submit" >Reset Password</Button>
                     </Form>
                     <div className="w-100 text-center mt-3">
-                        <Link to="/login" >Login</Link>
+                        <Link to="/signin" > &larr; Back to Log In Page</Link>
+                        <Link to="/https://mail.google.com/" > or Check Your Email &rarr;</Link>
                     </div>
                 </Card.Body>
             </Card>
             <div className="w-100 text-center mt-2">
-                Need an account? <Link to="/signup" >Sign Up</Link>
+                Need More help<Link to="/help-page" >Help</Link>
             </div>
-        </>
-    );
-}
-import React from 'react'
+        
+    </>
+  );
+};
+export default PasswordReset;
 
-export default function ForgotPassword() {
-    return (
-        <div>
-
-        </div>
-    )
-}
-
-
+// const sendResetEmail = event => {
+//   event.preventDefault();
+//   auth
+//     .sendPasswordResetEmail(email)
+//     .then(() => {
+//       setEmailHasBeenSent(true);
+//       setTimeout(() => {setEmailHasBeenSent(false)}, 3000);
+//     })
+//     .catch(() => {
+//       setError("Error resetting password");
+//     });
+// };
