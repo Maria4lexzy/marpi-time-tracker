@@ -1,45 +1,24 @@
-// import React, { useState } from 'react';
-// import { Button, Card, Alert } from 'react-bootstrap';
-// import { useAuth } from './Firebase/context';
-// import { Link } from 'react-router-dom';
-// import { useHistory } from 'react-router-dom';
-// import SignOutButton from './SignOutButton'
-// export default function Dashboard() {
 
-//     const [error, setError] = useState('');
-//     const { currentUser, logout } = useAuth();
-//     const history = useHistory();
-
-//     async function handleLogout() {
-//         setError('');
-//         try {
-//             await logout();
-//             history.pushState('/login');
-//         } catch { setError('Failed to logout'); }
-//     }
-//     return (
-//         <><Card>
-//             <Card.Body>
-//                 <h2 className="text-center">Profile</h2>
-//                 {error && <Alert variant="danger">{error}</Alert>}
-//                 <strong>Email: {currentUser.email}</strong>
-//                 <Link to="/update-profile" className="btn btn-primary w-100 mt-3">Update Profile</Link>
-//             </Card.Body>
-
-//         </Card>
-//             <div className="w-100 text-center mt-2">
-//                 <Button variant="link" onClick={handleLogout}> Log Out</Button>
-//             </div>
-//         </>
-//     )
-// }
-
-import React from 'react'
+import React, {useContext} from 'react';
+import Can from './Can';
+import Calendar from './Calendar'
+import {  Redirect } from 'react-router-dom';
+import * as ROUTES from '../constants/routes';
+import {UserContext} from '../providers/UserProvider';
 
 export default function Dashboard() {
+    const user = useContext(UserContext);
     return (
-        <div>
-
-        </div>
+     <>
+        <Can role={user[1].roles} perform="dashbaord:visit" yes={()=>(<>
+        <p>Render Calendar Component + swapping shift settings and other requests and quick actions
+        </p>           
+        <Calendar/>
+        </>
+        )}
+        no={()=> <Redirect to={ROUTES.SIGN_IN}/>}
+        />
+    
+     </>
     )
 }

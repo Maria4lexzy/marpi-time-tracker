@@ -2,11 +2,11 @@ import React, { useContext, useRef, useState } from "react";
 import { UserContext } from "../../providers/UserProvider";
 import { Form, Button, Card, Alert, Container, CardDeck, Modal } from 'react-bootstrap'
 import {auth} from "../../utils/firestore";
-import { updateUserPassword, updateUserEmail, storage,writeImageToDb} from '../../utils/firestore';
-import { Link } from 'react-router-dom';
+import { updateUserPassword, updateUserEmail, storage, writeImageAndDisplayNameToDb} from '../../utils/firestore';
+import { Link, Redirect } from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
-import AvatarEditor from 'react-avatar-editor'
-import Avatar from 'react-avatar-edit'
+import { useHistory } from 'react-router-dom';
+import Can from '../Can';
 
 const WorkerProfilePage = () => {
 
@@ -16,6 +16,8 @@ const WorkerProfilePage = () => {
   const passwordConfirmRef = useRef();
   const currentPasswordRef = useRef();
   const displayNameRef = useRef();
+  const history = useHistory();
+
   //states
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,12 +29,13 @@ const WorkerProfilePage = () => {
   const [url, setUrl] = useState("");
   const [progress, setProgress] = useState(0);
   const [show, setShow] = useState(false);
-
+const altImageUrl='https://firebasestorage.googleapis.com/v0/b/mtt-dev-12744.appspot.com/o/profileImages%2FmyAvatar.png?alt=media&token=8e3119f7-0b15-42c5-ba67-7b6cd57046b0';
   //what happens when an image is selected
   const handleChange = e => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
     }
+   
   };
   //save users modifications
   function handleProfileUpdate(e) {
@@ -53,10 +56,13 @@ const WorkerProfilePage = () => {
     if (passwordRef.current.value) {
         promises.push(updateUserPassword(currentPasswordRef.current.value, passwordRef.current.value));
     }
+    if(displayNameRef.current.value !== displayName){
+      promises.push(writeImageAndDisplayNameToDb("displayName","", displayNameRef.current.value))
+    }
 
     Promise.all(promises)
         .then((user) => {
-            // history.push('/');
+             history.push(ROUTES.SIGN_IN);
             setError('Failed to update account')
         }).catch((e) => {
           console.log(e.message);
@@ -65,12 +71,19 @@ const WorkerProfilePage = () => {
 
         })
 }
+async function handleLogout() {
+  setError('');
+  try {
+      await auth.signOut();
+      history.push(ROUTES.SIGN_IN);
+  } catch { setError('Failed to logout'); }
+}
 //upload image to firestore
 const handleImageUpload = () => {
     //create storage ref
     //upload  file
     //the put method returns an "upload task"
-  const uploadTask = storage.ref(`profileImages/${image.name}`).put(image);
+  const uploadTask = storage.ref(`profileImages/${displayName}`).put(image);
   //use the task to subscribe to state changes which are represented by functions: 
   //we listen to 3 state changes
   //notifies us about the upload progress
@@ -90,11 +103,11 @@ const handleImageUpload = () => {
     () => {
       storage
         .ref("profileImages")
-        .child(image.name)
+        .child(displayName)
         .getDownloadURL()
         .then(url => {
           //upload url into user's firestore
-          writeImageToDb(url);
+          writeImageAndDisplayNameToDb("image", url, "");
           
           console.log(url +"url");
           setUrl(url);
@@ -113,19 +126,18 @@ const imageStyle = {
 };
   return (
     <>
-      <Container className="text-center container mt-5 my-1 ">
+      <Can role={user[1].roles} perform="worker-profile-page:visit" yes={()=>(<>
+        <Container className="text-center container mt-5 my-1 ">
       <CardDeck>
         <Card  border="info">
           <Card.Header as="h5">{displayName}</Card.Header>
           <Card.Body>
               <div>
                     <div className="avatar rounded-circle">
-                        <img src={url || photoURL} alt="firebase-image" style={imageStyle}/>
+                        <img src={url || photoURL ||altImageUrl} alt="firebase-image" style={imageStyle}/>
                     </div>
               </div>     
-            <Card.Text>
-              <p className='lead'>{email}</p>
-            </Card.Text>
+            <Card.Text className='lead'>{email}</Card.Text>
           </Card.Body>
           <Card.Footer>
           <Button type="submit" variant="info"  onClick={handleShow}>
@@ -142,7 +154,7 @@ const imageStyle = {
               <Button className="w-100 my-2" variant="outline-info" type="submit"  >Requests</Button>
           </Card.Body>
           <Card.Footer>
-          <Button type="submit" variant="info"  onClick = {() => {auth.signOut()}}>
+          <Button type="submit" variant="info"  onClick = {handleLogout}>
             SIGN OUT
           </Button>
           </Card.Footer>
@@ -160,7 +172,7 @@ const imageStyle = {
                             <Form onSubmit={handleProfileUpdate}>
                                 <Form.Group id="displayName">
                                     <Form.Label>User name</Form.Label>
-                                    <Form.Control  disabled={true} type="email" ref={displayNameRef} required defaultValue={displayName}></Form.Control>
+                                    <Form.Control   type="text" ref={displayNameRef} required defaultValue={displayName}></Form.Control>
                                 </Form.Group>
 
                                 <Form.Group id="email">
@@ -194,13 +206,13 @@ const imageStyle = {
 
       <Modal show={show} onHide={handleClose}   aria-labelledby="contained-modal-title-vcenter" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Edit Profile Picture</Modal.Title>
         </Modal.Header>
         <Modal.Body className="text-center">
           <div className="avatar rounded-circle">
-              <img src={url || "https://cdn1.iconfinder.com/data/icons/avatars-1-5/136/87-512.png"} alt="firebase-image" style={imageStyle}/>
-              <input type="file"  name="filename" className="custom-file-input" id="customInput"  onChange={handleChange}/>
-              <input type="file" onChange={handleChange} />
+              <img src={url || altImageUrl ||photoURL} alt="firebase-image" style={imageStyle}/>
+              <input  type="file" id="file" name="file"  accept="image/*|" onChange={handleChange}/>
+
           </div>
           <div>
           <progress value={progress} max="100" /> 
@@ -216,6 +228,11 @@ const imageStyle = {
         </Modal.Footer>
       </Modal>
  
+     </>
+     )}
+     no={()=> <Redirect to={ROUTES.DASHBOARD}/>}
+     />
+    
   </>
   ) 
 };

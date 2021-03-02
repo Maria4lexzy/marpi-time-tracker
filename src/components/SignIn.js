@@ -12,16 +12,23 @@ const SignIn = () => {
   const passwordRef = useRef();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
-    async function handleSubmit(e) {
-      e.preventDefault();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    handleSignIn();
+
+  }
+
+    async function handleSignIn() {
 
       try {
           setError('');
           setLoading(true);
           console.log("try sign in");
           await signInWithEmailAndPassword(emailRef.current.value, passwordRef.current.value);
-          // history.push("/");
+          history.push(ROUTES.DASHBOARD);
       } catch (e){
           setError(e.message());
           console.log(e.message +" Sign in catch");

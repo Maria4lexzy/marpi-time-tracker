@@ -64,19 +64,34 @@ export const generateUserDocument = async (user) => {
     }
   }
 
-  export const writeImageToDb = async ( urlRef)=>{
+  export const writeImageAndDisplayNameToDb = async (type, imgRef, displayNameRef)=>{
     var user = auth.currentUser;
     const userPublicRef = firestore.doc(`userPublic/${user.uid}`);
-     photoURL=urlRef;
-   console.log(urlRef);
-   console.log(photoURL);
-    try {
-      await userPublicRef.update({
-        photoURL: urlRef
-      });
-    } catch (error) {
-      console.error("Error creating user document", error);
+     photoURL=imgRef;
+     displayName=displayNameRef
+     console.log(displayName);
+   console.log(imgRef);
+   console.log(imgRef);
+    if(type=='image'){
+      try {
+        await userPublicRef.update({
+          photoURL: imgRef
+        });
+      } catch (error) {
+        console.error("Error  saving image", error);
+      }
     }
+    else{
+      try {
+        await userPublicRef.update({
+          displayName: displayNameRef
+        });
+      } catch (error) {
+        console.error("Error updating name ", error);
+      }
+    }
+   
+    
   }
 
  const getAllUserData=async uid=>{
