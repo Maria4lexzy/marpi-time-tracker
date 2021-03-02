@@ -1,21 +1,8 @@
 import React from 'react';
 
 import Firebase from './Firebase/Firebase'
-import {  BrowserRouter as Router,  Route, } from 'react-router-dom';
-import CreateUser from './CreateUser';
-import SignIn from './SignIn';
-import UserProvider from '../providers/UserProvider';
-import SignIn from "./SignIn";
-import CreateUser from "./CreateUser";
-import ManagerProfilePage from './Firebase/ManagerProfilePage';
-import WorkerProfilePage from "./Firebase/WorkerProfilePage";
-import Calendar from './Calendar';
-import PasswordReset from "./Firebase/PasswordReset";
-import Dashboard from './Dashboard';
-import {NavigationAuth, NavigationNonAuth} from './Navigation';
-import * as ROUTES from '../constants/routes';
-import PrivateRoute from '../constants/PrivateRoute';
 import {  BrowserRouter as Router,  Route, Switch } from 'react-router-dom';
+import UserProvider from '../providers/UserProvider';
 const App = () => (
 
 <Router>
