@@ -4,9 +4,8 @@ const rules ={
     },
     worker:{
         static:[
-            "users:getSelf",
-            "dashbaord:visit",
-            "worker-profile-page:visit"    
+            "worker-application:visit",
+
         ],
         dynamic:{
             "profile:edit":({userId, documentId}) =>{
@@ -23,6 +22,11 @@ const rules ={
             "users:getSelf",
             "dashboard:visit",
             "manager-profile-page:visit"
+        ]
+    },
+    manager:{
+        static:[
+            "manager-application:visit"
         ]
     }
 };

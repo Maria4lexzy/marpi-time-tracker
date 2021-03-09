@@ -1,9 +1,10 @@
 import React, { useState, useRef } from "react";
-import { Link } from "@reach/router";
+import { Link } from 'react-router-dom';
 import { Form, Button, Card, Alert } from 'react-bootstrap'
 import {sendResetEmail} from '../../utils/firestore';
+import * as ROUTES from '../../constants/routes';
 
-const PasswordReset = () => {
+const PasswordResetPage = () => {
 
 
   const emailRef = useRef();
@@ -30,7 +31,6 @@ const PasswordReset = () => {
   
   return (
     <>
-   
              <Card>
                 <Card.Body>
                     <h2 className="text-center">Password Reset</h2>
@@ -45,7 +45,7 @@ const PasswordReset = () => {
                         <Button disabled={loading} className="w-100" type="submit" >Reset Password</Button>
                     </Form>
                     <div className="w-100 text-center mt-3">
-                        <Link to="/signin" > &larr; Back to Log In Page</Link>
+                        <Link to={ROUTES.SIGN_IN} > &larr; Back To Sign In Page</Link>
                         <Link to="/https://mail.google.com/" > or Check Your Email &rarr;</Link>
                     </div>
                 </Card.Body>
@@ -57,17 +57,4 @@ const PasswordReset = () => {
     </>
   );
 };
-export default PasswordReset;
-
-// const sendResetEmail = event => {
-//   event.preventDefault();
-//   auth
-//     .sendPasswordResetEmail(email)
-//     .then(() => {
-//       setEmailHasBeenSent(true);
-//       setTimeout(() => {setEmailHasBeenSent(false)}, 3000);
-//     })
-//     .catch(() => {
-//       setError("Error resetting password");
-//     });
-// };
+export default PasswordResetPage;

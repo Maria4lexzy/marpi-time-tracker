@@ -70,7 +70,7 @@ export default function CalendarDayView() {
     return (
         <>
           <div className="mt-5 week">
-                    <Table bordered responsive="md" className="month">
+                    <Table bordered responsive className="month">
                         <thead className="text-uppercase text-center" key="topHeader"> 
                         <tr key="header">
                             {calendarHeader}

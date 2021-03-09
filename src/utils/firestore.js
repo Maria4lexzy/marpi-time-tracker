@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 let displayName, roles, photoURL;
-const userDocumentPromises=[];
+
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -65,13 +65,13 @@ export const generateUserDocument = async (user) => {
   }
 
   export const writeImageAndDisplayNameToDb = async (type, imgRef, displayNameRef)=>{
+   console.log("firestore write");
     var user = auth.currentUser;
     const userPublicRef = firestore.doc(`userPublic/${user.uid}`);
      photoURL=imgRef;
      displayName=displayNameRef
      console.log(displayName);
-   console.log(imgRef);
-   console.log(imgRef);
+
     if(type=='image'){
       try {
         await userPublicRef.update({
@@ -81,7 +81,7 @@ export const generateUserDocument = async (user) => {
         console.error("Error  saving image", error);
       }
     }
-    else{
+    else if(type="displayName"){
       try {
         await userPublicRef.update({
           displayName: displayNameRef
@@ -96,8 +96,6 @@ export const generateUserDocument = async (user) => {
 
  const getAllUserData=async uid=>{
   const userResult = [await getUserProfile(uid), await getUserDocument(uid)];
-
-  console.log(userDocumentPromises[0]);
   return await userResult;
  }
   const getUserProfile = async uid => {

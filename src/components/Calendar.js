@@ -3,7 +3,7 @@ import '../assets/css/Calendar.css';
 import CalendarMonthView from './CalendarMonthView'
 import CalendarWeekView from './CalendarWeekView'
 import CalendarDayView from './CalendarDayView'
-import { Button} from 'react-bootstrap'
+import { Button, Container} from 'react-bootstrap'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft} from 'react-icons/md';
 import {currentDateAction,fistDateInWeekAction,dayDisplayedAction} from "../redux/CalendarSlice"
 import { useSelector, useDispatch } from "react-redux";
@@ -146,7 +146,8 @@ export default function Calendar() {
     return (
     <>
     {/* Calendar Tools */}
-    <div className="calendar-tools">
+   <Container>
+   <div className="calendar-tools">
         <div className="row text-center ">
             <div className="col-9 ">
                 <div className="row">
@@ -175,6 +176,7 @@ export default function Calendar() {
     <div> {activeView === 'MONTH' && <CalendarMonthView />}
     {activeView === 'WEEK' && <CalendarWeekView />}
     {activeView === 'DAY' && <CalendarDayView />}</div>
+   </Container>
     </>
     )
 }

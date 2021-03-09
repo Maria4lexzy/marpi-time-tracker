@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createElement } from 'react';
-import {Table} from 'react-bootstrap'
+import {Container, Table} from 'react-bootstrap'
 import store from '../redux/configureStore';
 import {currentTitleAction} from "../redux/CalendarSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -80,7 +80,7 @@ export default function CalendarWeekView() {
     return (
         <>
           <div className="mt-5 week">
-                    <Table bordered responsive="md" className="month">
+                    <Table bordered responsive className="month">
                         <thead className="text-uppercase text-center" key="topHeader"> 
                         <tr key="header">
                             {calendarHeader}

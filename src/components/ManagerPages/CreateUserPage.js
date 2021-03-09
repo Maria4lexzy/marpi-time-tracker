@@ -1,9 +1,6 @@
-import React, { useRef, useState, Component} from 'react';
+import React, { useRef, useState} from 'react';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap'
-import { useHistory } from 'react-router-dom';
-import { Link } from "@reach/router";
-import * as ROUTES from '../constants/routes';
-import {createNewUser} from '../utils/firestore';
+import {createNewUser} from '../../utils/firestore';
 import Select from 'react-select';
 
 export default function CreateUser() {
@@ -20,13 +17,6 @@ export default function CreateUser() {
         { value: 'manager', label: 'Manager' },
         { value: 'worker', label: 'Worker' }
       ]
-          const history = useHistory;
-
-        //   const handleToggle = ({ target }) =>
-        //   setRoles(s => ({ ...s, [target.name]: !s[target.name] }));
-        
-  
-
     const handleSelect = (e) => {
         let rolesArray=[];
         let admin=false;
@@ -67,7 +57,7 @@ export default function CreateUser() {
             userError.then(
                 function(value) {
                     if(value)
-                    if(value.message !=undefined)
+                    if(value.message !==undefined)
                         setError(value.message);
                      },
                  function(error) {
@@ -111,7 +101,7 @@ export default function CreateUser() {
                                     <Form.Label>Password Confirmation</Form.Label>
                                     <Form.Control type="password" ref={passwordConfirmRef} required></Form.Control>
                                 </Form.Group>
-                                <Button disabled={loading} className="w-100" type="submit" >Register User</Button>
+                                <Button disabled={loading} className="w-100" variant="info" type="submit" >Register User</Button>
                                 <Form.Group id="roles">
                                     <Form.Label>User Role</Form.Label>
                                     <Select options={options} 
@@ -119,25 +109,13 @@ export default function CreateUser() {
                                             className="basic-multi-select"
                                             onChange={handleSelect}
                                             />
-                                {/* {Object.keys(roles).map(key => (
-                                    <input
-                                        type="checkbox"
-                                        onChange={handleToggle}
-                                        key={key}
-                                        name={key}
-                                        checked={roles[key]}
-                                    />))} */}
-                                    {selectedValue && <div style={{ marginTop: 20, lineHeight: '25px' }}>
-        <div><b>Selected Value: </b> {JSON.stringify(selectedValue, null, 2)}</div>
-      </div>}
                                 </Form.Group>
                             </Form>
                         </Card.Body>
                     </Card>
-                    <div className="w-100 text-center mt-2">
+                    {/* <div className="w-100 text-center mt-2">
                         Already have an account? <Link to={ROUTES.SIGN_IN} >Log In</Link>
-                    </div>
-
+                    </div> */}
                 </div>
             </Container>
         </>

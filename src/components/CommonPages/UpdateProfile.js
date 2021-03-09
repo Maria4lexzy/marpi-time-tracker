@@ -3,7 +3,7 @@ import { Form, Button, Card, Alert, Container } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom';
 import { useAuth } from './Firebase/context';
 import { Link } from 'react-router-dom';
-import * as ROUTES from '../constants/routes';
+import * as ROUTES from '../../constants/routes';
 
 export default function Signup() {
 
