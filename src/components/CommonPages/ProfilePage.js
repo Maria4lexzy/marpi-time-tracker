@@ -6,7 +6,7 @@ import { makeStyles,useTheme } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {useHistory} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
-import * as MUI from '../../materialImportHelper/navImports';
+import * as MUI from '../../materialImportHelper/materialImports';
 import ProfilePopUp from './ProfilePopUp';
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,5 +1,5 @@
 import React from 'react'
-import * as mui from '../../materialImportHelper/navImports';
+import * as mui from '../../materialImportHelper/materialImports';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({

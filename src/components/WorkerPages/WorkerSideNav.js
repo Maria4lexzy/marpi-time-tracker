@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {useHistory, withRouter} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 // import {useStyles} from '../../navProperties/navProperties';
-import * as NAVIMPORTS from '../../materialImportHelper/navImports';
+import * as NAVIMPORTS from '../../materialImportHelper/materialImports';
 import WorkerApplication from './WorkerApplication'
 
 import {auth} from '../../utils/firestore';

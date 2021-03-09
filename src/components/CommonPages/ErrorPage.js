@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles,useTheme } from '@material-ui/core/styles';
 import {useHistory} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
-import * as NAVIMPORTS from '../../materialImportHelper/navImports';
+import * as NAVIMPORTS from '../../materialImportHelper/materialImports';
 
 const useStyles = makeStyles((theme) => ({
     root: {
