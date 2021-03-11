@@ -4,7 +4,7 @@ import {useHistory, withRouter} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 // import {useStyles} from '../../navProperties/navProperties';
 import * as NAVIMPORTS from '../../materialImportHelper/materialImports';
-import WorkerApplication from './WorkerApplication'
+import ManagerApplication from './ManagerApplication'
 
 import {auth} from '../../utils/firestore';
 
@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function WorkerSideNav(props) {
+function ManagerSideNav(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -182,9 +182,7 @@ const handleAccountMenuClose = () => {
           >
             <NAVIMPORTS.MenuIcon />
           </NAVIMPORTS.IconButton>
-          <NAVIMPORTS.Typography variant="h6" noWrap>
-            Marpi Time Tracker - Worker view
-          </NAVIMPORTS.Typography>
+          <NAVIMPORTS.Typography variant="h6" noWrap>MANAGER VIEW</NAVIMPORTS.Typography>
           <NAVIMPORTS.IconButton
                  aria-label="account of current user"
                  aria-controls="menu-appbar"
@@ -265,11 +263,11 @@ const handleAccountMenuClose = () => {
       </NAVIMPORTS.Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-      <WorkerApplication/>
+      <ManagerApplication/>
       </main>
     </div>
   );
 }
 
 
-export default withRouter(WorkerSideNav);
+export default withRouter(ManagerSideNav);
