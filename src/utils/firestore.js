@@ -3,7 +3,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
 import RegisterEmployee from '../redux/RegisterEmployee'
-let displayName, roles,  contractType;
+let displayName, roles,  contractType, firstName, lastName, dob, team, cpr;
 let photoURL="";
 
 
@@ -62,7 +62,9 @@ export const generateUserDocument = async (user) => {
         displayName,
         photoURL
       });
+      await RegisterEmployee(workingNumber,firstName,lastName,dob,contractType,team, cpr)
     } catch (error) {
+      //TODO: remove user document from firestore and db if error occurs
       console.error("Error creating user document", error);
     }
   }
@@ -174,13 +176,19 @@ export const updateUserEmail=(currentPassword, newEmail)=>{
 
   
 }
-export const createNewUser = async (displayN,email,password,rolesParam, contractType_) =>
+export const createNewUser = async (displayN,email,password,rolesParam, contractType_, firstN, lastN, dob_, team_, cpr_) =>
 {
+
     try{
       displayName = displayN;
       roles = rolesParam;
       contractType=contractType_
-      console.log(contractType);
+      firstName=firstN;
+      lastName=lastN;
+      dob=dob_;
+      team=team_;
+      cpr=cpr_;
+      // console.log('USERRR'+firstName, lastName, dob, team, cpr);
       var authApp = firebase.initializeApp(firebaseConfig, 'authApp');
       var detachedAuth = authApp.auth();
       const registeredUser = await detachedAuth.createUserWithEmailAndPassword(email, password);

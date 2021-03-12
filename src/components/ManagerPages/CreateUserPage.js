@@ -4,9 +4,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import {createNewUser} from '../../utils/firestore';
 import Select from 'react-select';
 import clsx from 'clsx';
-// import Date from '@date-io/moment'
+import DateFnsUtils from '@date-io/date-fns'; // choose your lib
 import * as mui from '../../materialImportHelper/materialImports';
-import {DatePicker,TimePicker,DateTimePicker,MuiPickersUtilsProvider,}from '@material-ui/pickers';
+import {DatePicker, KeyboardDatePicker,MuiPickersUtilsProvider,}from '@material-ui/pickers';
+import RegisterEmployee from '../../redux/RegisterEmployee'
 const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow:1,
@@ -54,31 +55,43 @@ export default function CreateUser() {
     const firstNameRef = useRef();
     const lastNameRef = useRef();
     const displayNameRef = useRef();
-    const DOBRef = useRef();
+   
     const cprRef = useRef();
-    const teamRef = useRef();
     const passwordRef = useRef();
     const passwordConfirmRef = useRef();
-    const [error, setError] = useState('');
+    const [error, setError] = useState(''); 
+    const [dob, setDob] = useState(''); 
     const [loading, setLoading] = useState(false);
     const [selectedRole, setSelectedRole] = useState();
     const [selectedContract, setSelectedContract] = useState(null);
+    const [selectedTeam, setSelectedTeam] = useState(null);
     const classes = useStyles();
     const [success, setSuccess] = useState(false);
     const buttonClassname = clsx({
         [classes.buttonSuccess]: success,
       });
-    var dob=new Date().toISOString;
-     
-      const roleOptions = [
+    const [selectedDate, setSelectedDate] = useState(new Date());   
+    const roleOptions = [
         { value: 'admin', label: 'Admin' },
         { value: 'manager', label: 'Manager' },
         { value: 'worker', label: 'Worker' }
       ]
       const contractOptions = [
-        { value: 'part-time', label: 'Part-Time' },
-        { value: 'full-time', label: 'Full-Time' },
-      ]
+        { value: 'PT', label: 'Part-Time' },
+        { value: 'FT', label: 'Full-Time' },
+      ];
+      const teamOptions = [
+        { value: 'ATM', label: 'Team A' },
+        { value: 'BTM', label: 'Team B' },
+      ];
+    const handleDateChange = (date) => {
+      setSelectedDate(date);
+      console.log(selectedDate);
+      setDob(date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDay());
+      console.log(dob);
+   
+     
+}
     const handleRoleSelect = (e) => {
         let rolesArray=[];
         let admin=false;
@@ -106,14 +119,19 @@ export default function CreateUser() {
     const handleContractSelect = (e) => {
         console.log(e.value+"contract type");
         setSelectedContract(e.value);
-     
-
+      }
+  
+    const handleTeamSelect = (e) => {
+        console.log(e.value+"team");
+        setSelectedTeam(e.value);
       }
   
     async function handleSubmit(e) {
-        console.log("button");
+
+   
+        e.preventDefault();        console.log("button");
         console.log(selectedContract);
-        e.preventDefault();
+        console.log(dob);
         if (passwordRef.current.value !== passwordConfirmRef.current.value) {
             return setError('Passwords do not match');
 
@@ -121,7 +139,17 @@ export default function CreateUser() {
         try {
             setError('');
             setLoading(true);
-            let userError=createNewUser(displayNameRef.current.value, emailRef.current.value, passwordRef.current.value,selectedRole,selectedContract)
+            let userError=createNewUser(
+              displayNameRef.current.value, 
+              emailRef.current.value, 
+              passwordRef.current.value,
+              selectedRole,
+              selectedContract, 
+              firstNameRef.current.value,
+              lastNameRef.current.value,
+              dob,
+              selectedTeam,
+              cprRef.current.value)
             
             userError.then(
                 function(value) {
@@ -145,14 +173,10 @@ export default function CreateUser() {
     
     return (
         <>
-            {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <DatePicker value={selectedDate} onChange={handleDateChange} />
-      <TimePicker value={selectedDate} onChange={handleDateChange} />
-      <DateTimePicker value={selectedDate} onChange={handleDateChange} />
-    </MuiPickersUtilsProvider> */}
+
             <Container className="d-flex alighn-items-center justify-content-center" style={{ minHeight: "100vh" }}>
                 <div className="w-100" style={{ maxWidth: "800px" }}>
-                    <mui.Card>
+                    <Card>
                         <Card.Body>
                             <h2 className="text-center">Add A New Employee</h2>
                             {error && <Alert variant="danger">{error}</Alert>}
@@ -161,13 +185,13 @@ export default function CreateUser() {
                                 <div className="col-6"> 
                                   <Form.Group id="displayName">
                                     <Form.Label>First Name</Form.Label>
-                                    <Form.Control autoComplete="off" type="text" ref={firstNameRef} required></Form.Control>
+                                    <Form.Control  placeholder="Doe"  autoComplete="off" type="text" ref={firstNameRef} required></Form.Control>
                                   </Form.Group> 
                                 </div>
                                 <div className="col-6"> 
                                   <Form.Group id="displayName">
                                     <Form.Label>Last Name</Form.Label>
-                                    <Form.Control autoComplete="off" type="text" ref={lastNameRef} required></Form.Control>
+                                    <Form.Control placeholder="Doe" autoComplete="off" type="text" ref={lastNameRef} required></Form.Control>
                                   </Form.Group> 
                                 </div>
                               </div>
@@ -175,24 +199,49 @@ export default function CreateUser() {
                                 <div className="col-6"> 
                                 <Form.Group id="displayName">
                                     <Form.Label>Username</Form.Label>
-                                    <Form.Control autoComplete="off" type="text" ref={displayNameRef} required></Form.Control>
+                                    <Form.Control  placeholder="Jonny" autoComplete="off" type="text" ref={displayNameRef} required></Form.Control>
                                 </Form.Group>
                                 </div>
                                 <div className="col-6"> 
                                   <Form.Group id="displayName">
                                     <Form.Label>CPR No</Form.Label>
-                                    <Form.Control autoComplete="off" type="text" ref={cprRef} required></Form.Control>
+                                    <Form.Control placeholder="010198-2304" autoComplete="off" type="text" ref={cprRef} required></Form.Control>
                                   </Form.Group> 
+                                </div>
+                
+                              </div>
+                              <div className="row">
+                                <div className="col-6">
+                                  <Form.Group id="email">
+                                    <Form.Label>Email</Form.Label>
+                                    <Form.Control placeholder="Example: Jonny@gmail.com" autoComplete="off" type="text" ref={emailRef} required></Form.Control>
+                                  </Form.Group>
+                                </div>
+                                <div className="col-6">
+                                <Form.Group id="email">
+                                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                                      <KeyboardDatePicker
+                                        fullWidth
+                                        format="MM/dd/yyyy"
+                                        margin="normal"
+                                        id="date-picker-dialog"
+                                        label="Date picker dialog"
+                                        value={selectedDate}
+                                        onChange={handleDateChange}
+                                        KeyboardButtonProps = {{
+                                          'aria-label': 'change date',
+                                        }}
+                                      />
+                                  </MuiPickersUtilsProvider>
+                                  </Form.Group>
+                         
                                 </div>
                               </div>
                                 
-                                <Form.Group id="email">
-                                    <Form.Label>Email</Form.Label>
-                                    <Form.Control autoComplete="off" type="email" ref={emailRef} required></Form.Control>
-                                </Form.Group>
+                                
                                 <div className="row">
                                   <div className="col-6">
-                                    <Form.Group id="password">
+                                    <Form.Group id="password"> 
                                       <Form.Label>Password</Form.Label>
                                       <Form.Control autoComplete="new-password" autoComplete="off" type="password" ref={passwordRef} required></Form.Control>
                                   </Form.Group>
@@ -205,31 +254,38 @@ export default function CreateUser() {
                                   </div>
                                 </div>
                               <div className="row">
-                                <div className="col-6">
+                                <div className="col-4">
                                 <Form.Group id="roles">
-                                    <Form.Label>User Role</Form.Label>
+                                    <Form.Label>Select User Role</Form.Label>
                                     <Select options={roleOptions} 
                                             className="basic-multi-select"
                                             onChange={handleRoleSelect}
                                     />
                                 </Form.Group> 
                                 </div>
-                                <div className="col-6">
+                                <div className="col-4">
                                   <Form.Group id="roles">
-                                      <Form.Label>Contract Type</Form.Label>
+                                      <Form.Label>Select Contract Type</Form.Label>
                                       <Select options={contractOptions} 
-                                              className="basic-multi-select"
                                               onChange={handleContractSelect}
                                       />
                                   </Form.Group>  
                                 </div>
+                                <div className="col-4"> 
+                                <Form.Group id="team">
+                                      <Form.Label>Select Team</Form.Label>
+                                      <Select options={teamOptions}   
+                                              onChange={handleTeamSelect}
+                                      />
+                                  </Form.Group>
+                                </div>
                               </div>
                                        
                                       
-                                <mui.Button disabled={loading} className="w-100" variant="contained" color="secondary" type="submit" >Register User</mui.Button>
+                                <mui.Button disabled={loading} className="w-100 mt-5" variant="contained" color="secondary" type="submit" >Register User</mui.Button>
                             </Form>
                         </Card.Body>
-                    </mui.Card>
+                    </Card>
                     {/* <div className="w-100 text-center mt-2">
                         Already have an account? <Link to={ROUTES.SIGN_IN} >Log In</Link>
                     </div> */}
