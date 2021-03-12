@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from './Firebase/context';
 import { Link } from 'react-router-dom';
-import * as ROUTES from '../constants/routes';
+import * as ROUTES from '../../constants/routes';
 
 export default function Signup() {
 
@@ -85,5 +85,15 @@ export default function Signup() {
         </>
     );
 }
+import React from 'react'
+
+export default function UpdateProfile() {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
 
 

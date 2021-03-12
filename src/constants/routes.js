@@ -1,9 +1,9 @@
-export const DASHBOARD = '/';
-export const SIGN_UP = '/signup';
-export const LOG_IN = '/login';
 export const CALENDAR = '/calendar';
-// // export const HOME = '/home';
-// export const ACCOUNT = '/account';
-// export const ADMIN = '/admin';
-// export const CALENDAR = '/calendar';
-export const FORGET_PASSWORD = '/forgot-password';
+export const CREATE_USER = '/create-user';
+export const SIGN_IN = '/sign-in';
+export const HOME = '/home';
+export const PASSWORD_FORGET = '/pw-reset';
+export const PROFILE_PAGE = '/profile';
+export const DASHBOARD = '/';
+export const WORKER_CONTAINER="worker-container";
+

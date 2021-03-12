@@ -1,50 +1,52 @@
-export const createCalendarDays = (updatedDate) => {
-    //get number of days in the current month
-    const lastDay = new Date(
-        updatedDate.getFullYear(),
-        updatedDate.getMonth() + 1,
-        0
-    ).getDate();
-
-    //get number of days in previous month
-    const prevLastDay = new Date(
-        updatedDate.getFullYear(),
-        updatedDate.getMonth(),
-        0
-    ).getDate();
-
-    //get number for name of the day for current month -> 0 = sunday .... 6 = saturday
-    let firstDayIndex = updatedDate.getDay();
+export const getFirstDayIndex = date =>{
+    
+    let firstDayIndex = date.getDay();
     //logic to put sunday as last(6) and monday as first(0)
-    if(firstDayIndex === 0)
+    if (firstDayIndex === 0)
         firstDayIndex = 6;
-    else if(firstDayIndex === 6)
-        firstDayIndex = 0;
     else
         firstDayIndex--;
 
-    let days = ""
-    let totalDays = lastDay;
-    //loop for creating previous month date numbers
-    for (let x = firstDayIndex; x > 0; x--) {
-        days += `<div class="prev-date">${prevLastDay - x + 1}</div>`;
-        totalDays++;
-    }
-    //loop for creating curent month date numbers
-    for (let i = 1; i <= lastDay; i++) {
-        if (
-        i === new Date().getDate() &&
-        updatedDate.getMonth() === new Date().getMonth()
-        ) {
-        days += `<div class="today">${i}</div>`;
-        } else {
-        days += `<div>${i}</div>`;
-        }
-    }
-    //loop for creating next month date numbers
-    for (let j = 1; j <= 42-totalDays; j++) {
-        days += `<div class="next-date">${j}</div>`;
-    }
-
-    return days;
+    return firstDayIndex;
 }
+
+export const getWeekNumbers = date =>{
+    
+    let weekNumbers=[];
+    for (let a = 0; a < 6; a++) {
+        weekNumbers.push(date.getWeekNumber());
+        date.setDate(date.getDate() + 7);    
+    }
+   return weekNumbers;   
+}
+// eslint-disable-next-line no-extend-native
+Date.prototype.getWeekNumber = function() {
+    var date = new Date(this.getTime());
+  date.setHours(0, 0, 0, 0);
+  // Thursday in current week decides the year.
+  date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+  // January 4 is always in week 1.
+  var week1 = new Date(date.getFullYear(), 0, 4);
+  // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+  return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000
+                        - 3 + (week1.getDay() + 6) % 7) / 7);
+}
+
+export const getFirstDateFromWeekNo = (weekNumber,year) =>{
+
+    var simple = new Date(year, 0, 1 + (weekNumber - 1) * 7);
+    var dow = simple.getDay();
+    var ISOweekStart = simple;
+    if (dow <= 4)
+        ISOweekStart.setDate(simple.getDate() - simple.getDay() + 1);
+    else
+        ISOweekStart.setDate(simple.getDate() + 8 - simple.getDay());
+    return ISOweekStart;
+
+}
+
+export const weeksInYear = (year) =>{
+    var d = new Date(year, 11, 31);
+    return d.getWeekNumber();
+  }
+  

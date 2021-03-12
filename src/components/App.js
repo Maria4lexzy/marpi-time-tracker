@@ -1,39 +1,30 @@
 import React from 'react';
-import Signup from "./Signup";
-import { AuthProvider } from '../contexts/AuthContext';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import Dashboard from './Dashboard';
-import Login from './Login';
-import PrivateRoute from './PrivateRoute';
-import ForgotPassword from './ForgotPassword';
-import UpdateProfile from './UpdateProfile';
-import Navigation from './Navigation'
-import * as ROUTES from '../constants/routes';
-import Calendar from './Calendar';
+import '../assets/css/app.css';
+import ScopedCssBaseline from '@material-ui/core/ScopedCssBaseline';
 
 
-function App() {
-  return (
+import Firebase from './Firebase/Firebase'
+import {  BrowserRouter as Router,  Route, Switch } from 'react-router-dom';
+import UserProvider from '../providers/UserProvider';
+const App = () => (
 
 
-    <Router>
-      <AuthProvider>
-        <Navigation />
-        <Switch>
-          {/* only match this slash path */}
-          <PrivateRoute exact path="/" component={Dashboard}></PrivateRoute>
-          <PrivateRoute exact path="/update-profile" component={UpdateProfile}></PrivateRoute>
-          <Route path={ROUTES.SIGN_UP} component={Signup}></Route>
-          <Route path={ROUTES.LOG_IN} component={Login}></Route>
-          <Route path={ROUTES.CALENDAR} component={Calendar}></Route>
-          <Route path={ROUTES.FORGET_PASSWORD} component={ForgotPassword}></Route>
+ <Router><UserProvider>
+     <ScopedCssBaseline>
+     <Firebase/>
+    </ScopedCssBaseline>
+   
+   {/* <NavigationAuth/>
+    <Switch>  
+    <Route  exact path={ROUTES.DASHBOARD} component={Dashboard}></Route>
+    <Route  path={ROUTES.CREATE_USER} component={CreateUser}></Route>
+    <Route  path={ROUTES.PASSWORD_FORGET} component={PasswordReset}></Route>
+    <Route  path={ROUTES.WORKER_PROFILE} component={WorkerProfilePage}></Route>
+    <Route  path={ROUTES.CALENDAR} component={Calendar}></Route>
+  </Switch>  */}
+ </UserProvider></Router>
 
-        </Switch>
-      </AuthProvider>
-    </Router>
 
-
-  );
-}
+);
 
 export default App;
