@@ -6,6 +6,7 @@ import CalendarDayView from './CalendarDayView'
 import { Button, Container} from 'react-bootstrap'
 import { MdKeyboardArrowRight, MdKeyboardArrowLeft} from 'react-icons/md';
 import {currentDateAction,fistDateInWeekAction,dayDisplayedAction} from "../redux/CalendarSlice"
+import {fetchCalendarMonthSum} from "../redux/ThunkAPICalls"
 import { useSelector, useDispatch } from "react-redux";
 import Select from 'react-select';
 import {getFirstDateFromWeekNo} from '../utils/calendar'
@@ -143,10 +144,21 @@ export default function Calendar() {
             dispatch(fistDateInWeekAction({newWeekDate: getFirstDateFromWeekNo(addDays.getWeekNumber(),addDays.getFullYear()).toString()}));
         }
     }
+    const insertText = () => {
+        let dates = ['2021-01-01','2021-01-25'];
+        dispatch(fetchCalendarMonthSum(dates)).then(()=>
+        {
+
+        });
+        document.getElementById("2021-3-14").getElementsByClassName("events-wrapper")[0].innerHTML = "feferf";
+    }
     return (
     <>
     {/* Calendar Tools */}
    <Container>
+   <div className="col-3  order-1 order-md-3 my-col">
+                        <Button onClick={() => insertText()} variant="outline-info" className="text-uppercase font-weight-bold calendar-tools-today px-sm-3 px-lg-5 px-md-4">INSERT ROW</Button>
+    </div>
    <div className="calendar-tools">
         <div className="row text-center ">
             <div className="col-9 ">

@@ -13,6 +13,7 @@ import SignInPage from "../CommonPages/SignInPage";
 import ErrorPage from '../CommonPages/ErrorPage'
 import Can from '../Can';
 import WorkerSideNav from '../WorkerPages/WorkerSideNav';
+import ManagerSideNav from '../ManagerPages/ManagerSideNav';
 const Firebase = () => {
     const user = useContext(UserContext);
     
@@ -21,15 +22,20 @@ const Firebase = () => {
           user ?
           <>
           {console.log(user[1].roles)}
-            <Can
+            {/* <Can
             role={user[1].roles}
             
             perform="worker-application:visit"
             yes={() => (
               <WorkerSideNav/> 
             )}
+            perform="manager-application:visit"
+            yes={() => (
+              <ManagerSideNav/> 
+            )}
             no={() => <ErrorPage/>}
             />
+         */}
           
             {/* <NavigationAuth/>  */}
              {/* <Switch>
@@ -42,7 +48,7 @@ const Firebase = () => {
 
              
            
-            {/* { user[1].roles.manager && <ManagerProfilePage /> || user[1].roles.admin && <ManagerProfilePage /> || user[1].roles.worker && <WorkerProfilePage />} */}
+            { user[1].roles.manager && <ManagerSideNav /> || user[1].roles.admin && <ManagerSideNav /> || user[1].roles.worker && <WorkerSideNav />}
           </>
         :
         <>

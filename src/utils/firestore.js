@@ -2,7 +2,9 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
-let displayName, roles, photoURL;
+import RegisterEmployee from '../redux/RegisterEmployee'
+let displayName, roles,  contractType, firstName, lastName, dob, team, cpr;
+let photoURL="";
 
 
 const firebaseConfig = {
@@ -53,13 +55,16 @@ export const generateUserDocument = async (user) => {
       await userRef.set({
         email,
         roles:{admin: roles[0],manager: roles[1],worker: roles[2]},
-        workingNumber
+        workingNumber, 
+        contractType
       });
       await userPublicRef.set({
         displayName,
         photoURL
       });
+      await RegisterEmployee(workingNumber,firstName,lastName,dob,contractType,team, cpr)
     } catch (error) {
+      //TODO: remove user document from firestore and db if error occurs
       console.error("Error creating user document", error);
     }
   }
@@ -103,7 +108,7 @@ export const generateUserDocument = async (user) => {
     
     return await firestore.doc(`userPublic/${uid}`).get().then((doc) => {
         if (doc.exists) {
-    
+    console.log(doc.data);
             return doc.data();
         } else {
             // doc.data() will be undefined in this case
@@ -171,11 +176,19 @@ export const updateUserEmail=(currentPassword, newEmail)=>{
 
   
 }
-export const createNewUser = async (displayN,email,password,rolesParam) =>
+export const createNewUser = async (displayN,email,password,rolesParam, contractType_, firstN, lastN, dob_, team_, cpr_) =>
 {
+
     try{
       displayName = displayN;
       roles = rolesParam;
+      contractType=contractType_
+      firstName=firstN;
+      lastName=lastN;
+      dob=dob_;
+      team=team_;
+      cpr=cpr_;
+      // console.log('USERRR'+firstName, lastName, dob, team, cpr);
       var authApp = firebase.initializeApp(firebaseConfig, 'authApp');
       var detachedAuth = authApp.auth();
       const registeredUser = await detachedAuth.createUserWithEmailAndPassword(email, password);

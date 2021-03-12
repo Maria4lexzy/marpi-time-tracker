@@ -1,8 +1,8 @@
 import React, { useContext, useRef, useState } from "react";
 import { UserContext } from "../../providers/UserProvider";
-import { Form, Button, Card, Alert, Container, CardDeck, Modal } from 'react-bootstrap'
+import { Form,Alert } from 'react-bootstrap'
 import { updateUserPassword, updateUserEmail, storage, writeImageAndDisplayNameToDb} from '../../utils/firestore';
-import { makeStyles,useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import {useHistory} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';

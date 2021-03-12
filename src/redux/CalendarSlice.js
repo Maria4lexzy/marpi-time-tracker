@@ -1,4 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit'
+import {fetchCalendarMonthSum} from './ThunkAPICalls'
+
+
+
 const calendarSlice = createSlice({
     name: "calendar",
     initialState: {
@@ -6,7 +10,8 @@ const calendarSlice = createSlice({
         dayDisplayed: "",
         fistDateInWeek: "",
         calendarTitle: "",
-        viewType: "MONTH"
+        viewType: "MONTH",
+        monthData: [],
     },
     reducers: {
      /* increment: state => ({...state, count: state.count + 1}),
@@ -36,6 +41,11 @@ const calendarSlice = createSlice({
           const { newView} = action.payload;
           state.viewType = newView;
       }
+    },
+    extraReducers: builder => {
+        builder.addCase(fetchCalendarMonthSum.fulfilled, (state, action) => {
+          state.monthData = action.payload;
+          })
     }
   });
 

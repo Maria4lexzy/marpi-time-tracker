@@ -21,7 +21,8 @@ const rules ={
             "users:get",
             "users:getSelf",
             "dashboard:visit",
-            "manager-profile-page:visit"
+            "manager-profile-page:visit",
+            "manager-application:visit"
         ]
     },
     manager:{

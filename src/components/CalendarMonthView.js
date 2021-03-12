@@ -9,7 +9,7 @@ import watch from 'redux-watch';
 export default function CalendarMonthView() {
 
     //titleText needs to be same name as a slice initial state
-    const {fistDateInWeek}  = useSelector((state) => state.calendar);
+    const {fistDateInWeek, monthData}  = useSelector((state) => state.calendar);
 
     const [weekNumbers, setWeekNumbers] = useState([]);
     const [firstCalRow, setFirstCalRow] = useState([]);
@@ -47,6 +47,7 @@ export default function CalendarMonthView() {
             if(newVal !== oldVal)
                 renderCalendar(new Date(newVal));
         }));
+        
     return () => {
         unsubscribe();
     }
@@ -109,7 +110,7 @@ export default function CalendarMonthView() {
         const month = updatedDate.getMonth()+1;
         for(let x = firstDayIndex; x > 0;x--)
         {
-            daysArray.push(<td key={year + `,`+ month + `,` + (prevLastDay - x + 1)}> <div style={{color:'#E8E8E8'}}  id={year + `,`+ month + `,` + (prevLastDay - x + 1)} className="day-field">{prevLastDay - x + 1}</div>
+            daysArray.push(<td key={year + `-`+ (month-1) + `-` + (prevLastDay - x + 1)} id={year + `-`+ (month-1) + `-` + (prevLastDay - x + 1)} > <div style={{color:'#E8E8E8'}}  className="day-field">{prevLastDay - x + 1}</div>
             <div className="events-wrapper"></div></td>)
             plusTotalDays++;
         }
@@ -182,14 +183,14 @@ export default function CalendarMonthView() {
                            
             if ( i === new Date().getDate() && updatedDate.getMonth() === new Date().getMonth() && updatedDate.getFullYear() === new Date().getFullYear())
             {
-                daysArray.push(<td className="today" key={year + `,`+ month + `,` +i }>
-                <div id={year + `,`+ month + `,` +i } className="day-field">{i}</div> <div className="events-wrapper">
+                daysArray.push(<td className="today" key={year + `-`+ month + `-` +i } id={year + `-`+ month + `-` +i } >
+                <div className="day-field">{i}</div> <div className="events-wrapper">
                 </div> </td>);
             }
             else
             {
-                daysArray.push(<td key={year + `,`+ month + `,` +i }>
-                <div id={year + `,`+ month + `,` +i } className="day-field">{i}</div> <div className="events-wrapper">
+                daysArray.push(<td key={year + + `-`+ month + `-` +i } id={year + `-`+ month + `-` +i } >
+                <div className="day-field">{i}</div> <div className="events-wrapper">
                 </div> </td>);
             }
             numberOfPrintedDays++;
@@ -242,13 +243,13 @@ export default function CalendarMonthView() {
                 rowNumber++;
             }
             numberOfPrintedDays++;
-            daysArray.push(<td key={year + `,`+ month + `,` +j }>
-                <div id={year + `,`+ month + `,` +j } className="day-field" style={{color:'#E8E8E8'}} >{j}</div> <div className="events-wrapper">
+            daysArray.push(<td key={year + `-`+ (month+1) + `-` +j } id={year + `-`+ (month+1) + `-` +j }>
+                <div  className="day-field" style={{color:'#E8E8E8'}} >{j}</div> <div className="events-wrapper">
                 </div> </td>);
         }
         setSixthCalRow(daysArray);
       
-    } 
+    }
        return (
         <>
             <div className="mt-5 calendar">
